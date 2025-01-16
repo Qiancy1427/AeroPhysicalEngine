@@ -9,6 +9,6 @@ int main(){
 	Vector3 vtt=Vector3(5,7,2);
 	Vector3::print(vtt); 
 	int k=-10086;
-	cout<<abs(k)<<"\n"; //测试中文注释
+	cout<<abs(k)<<"\n";
     return 0;
 }
