@@ -3,8 +3,9 @@
 
 #ifndef APEFL   
 #define APEFL  1  
-//����������ʼ
-	class Vector3 {//��һ���������� 
+
+//classify vector starting
+	class Vector3 {//classify Vector3
 	public:
 	    Vector3();
 	    Vector3(float a, float b, float c);
@@ -15,24 +16,24 @@
 	    static void print(Vector3 v1);
 	    float x, y, z;
 	};
-	Vector3::Vector3() {//�½������� 
+	Vector3::Vector3() {//empty Vector3 
 	    x = 0;
 	    y = 0;
 	    z = 0;
 	}
-	Vector3::Vector3(float a, float b, float c) {//�������� 
+	Vector3::Vector3(float a, float b, float c) {//Vector3 container 
 	    x = a;
 	    y = b;
 	    z = c;
 	}
-	Vector3 Vector3::operator+(Vector3 v1) {//�ӷ� 
+	Vector3 Vector3::operator+(Vector3 v1) {//addtion 
 	    Vector3 vt;
 	    vt.x = vt.x + v1.x;
 	    vt.y = vt.y + v1.y;
 	    vt.z = vt.z + v1.z;
 	    return vt;
 	}
-	Vector3 Vector3::operator-(Vector3 v1) {//���� 
+	Vector3 Vector3::operator-(Vector3 v1) {//subtraction
 	    Vector3 vt;
 	    vt.x = vt.x - v1.x;
 	    vt.y = vt.y - v1.y;
@@ -86,27 +87,28 @@
 		vt.z=v1.z/v1.w;
 		return vt;
 	}
-    //�����������
+//classify vector ending
  
-    struct NBT {//��ǩ�ṹ��
-        std::string name;
-        Vector4 data;
-        NBT(std::string st, Vector4 qt){//��ǩ����
-            name = st;
-            data = qt;
-        }
-    };
-    struct Object {//����ṹ��
-        std::queue <NBT> nbts;
-    };
+struct NBT {//define NBT
+    std::string name;
+    Vector4 data;
+    NBT(std::string st, Vector4 qt){//NBT constructor
 
-    /*
-    NBTs
-     Position 1
-     Velocity 2
-     Acceleration 3
-     Force 4
-    */
+        name = st;
+        data = qt;
+    }
+};
+struct Object {//define Object
+    std::queue <NBT> nbts;
+};
+
+/*
+NBTs' categories format
+ Position 1
+ Velocity 2
+ Acceleration 3
+ Force 4
+*/
 
 
 #endif
