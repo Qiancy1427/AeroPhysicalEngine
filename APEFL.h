@@ -1,5 +1,6 @@
 #include<bits/stdc++.h>
-#include<Windows.h>
+#include<windows.h>
+#include<conio.h>
 
 #ifndef APEFL   
 #define APEFL  1  
@@ -109,6 +110,10 @@ NBTs' categories format
  Acceleration 3
  Force 4
 */
-
+HWND initgraph(int width, int height, int flag = 0);		// Create graphics window
+void closegraph();	
 
 #endif
+
+
+
