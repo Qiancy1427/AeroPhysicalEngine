@@ -86,19 +86,27 @@
 		vt.z=v1.z/v1.w;
 		return vt;
 	}
-//�����������
+    //�����������
  
-struct NBT {//��ǩ�ṹ�� 
-    std::string name;
-    Vector4 data;
-    NBT(std::string st, Vector4 qt){//��ǩ����
-        name = st;
-        data = qt;
-    }
-};
-struct Object {//����ṹ�� 
-    std::queue <NBT> nbts;
-};
+    struct NBT {//��ǩ�ṹ��
+        std::string name;
+        Vector4 data;
+        NBT(std::string st, Vector4 qt){//��ǩ����
+            name = st;
+            data = qt;
+        }
+    };
+    struct Object {//����ṹ��
+        std::queue <NBT> nbts;
+    };
+
+    /*
+    NBTs
+     Position 1
+     Velocity 2
+     Acceleration 3
+     Force 4
+    */
 
 
 #endif
