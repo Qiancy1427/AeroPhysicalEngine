@@ -91,7 +91,7 @@
 struct NBT {//��ǩ�ṹ�� 
     std::string name;
     Vector4 data;
-    nbt(std::string st, Vector4 qt){//��ǩ���� 
+    NBT(std::string st, Vector4 qt){//��ǩ����
         name = st;
         data = qt;
     }
