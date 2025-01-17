@@ -110,8 +110,8 @@ NBTs' categories format
  Acceleration 3
  Force 4
 */
-HWND initgraph(int width, int height, int flag = 0);		// Create graphics window
-void closegraph();	
+//HWND initgraph(int width, int height, int flag = 0);		// Create graphics window
+//void closegraph();
 
 #endif
 
