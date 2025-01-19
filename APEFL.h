@@ -3,7 +3,7 @@
 
 #include<Windows.h>
 #include<Mmsystem.h>
-#include<Prnasnot.h>
+//#include<Prnasnot.h>
 #include<T2embapi.h>
 #include<Tvout.h>
 #include<Windef.h>
@@ -199,8 +199,8 @@ void printrect(HDC hdc,Vector2 poslt,Vector2 posrb,COLORREF color){
 	int yMin = poslt.y;
 	int xMax = posrb.x;
 	int yMax = posrb.y;
-	int iWidth = xmax - xmin;
-	int iHeight = ymax - ymin;
+	int iWidth = xMax - xMin;
+	int iHeight = yMax - yMin;
 	
 	int x,y;
 	
