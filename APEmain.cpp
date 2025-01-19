@@ -70,6 +70,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)/
 }
 
 void update(){//游戏逻辑 
+	int t=0;
+	for(int i=0;i++;i<10000000){
+		t++;
+	} 
 	
 	return;
 }
@@ -84,7 +88,8 @@ void render(){//渲染
     // All painting occurs here, between BeginPaint and EndPaint.
 
     FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+1));
-	paintrect(hdc,Vector2(pos,150),Vector2(pos+50,200),rgbcustom(255,0,0));
+    
+	setrect(hdc,Vector2(pos,150),Vector2(pos+50,200),rgbcustom(255,0,0));
 	
 	//painting end
 
@@ -104,7 +109,7 @@ DWORD WINAPI startLoop(LPVOID lpParamter){//主循环
 		if(deltatime<1000){
 			
 			pos=deltatime/10+pos;//方块向右溜 
-			pos=min(pos,1870);//限位，别让它溜大了 
+			pos=min(pos,1400);//限位，别让它溜大了 
 			cout<<"deltatime:"<<deltatime<<"ms\n";
 		}
 		
