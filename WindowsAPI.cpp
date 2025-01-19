@@ -60,6 +60,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     // Color constants.
+//    int x = 64, y = 64;
     const COLORREF rgbRed   =  0x000000FF;
     const COLORREF rgbGreen =  0x0000FF00;
     const COLORREF rgbBlue  =  0x00FF0000;
