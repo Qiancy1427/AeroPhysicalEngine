@@ -8,7 +8,6 @@
 
 #include"APEFL.h"
 
-#define targetfps 100
 
 using namespace std;
 
@@ -29,9 +28,9 @@ int pos;//临时的方块x位置
 void init(){//初始化 
 	//设置整个窗口的矩形 
 	rectt.top=0;
-	rectt.bottom=1080;
+	rectt.bottom=windowheight;
 	rectt.left=0;
-	rectt.right=1920;
+	rectt.right=windowwidth;
 		
 	//初始化deltatime系统和fps系统防止逻辑爆炸 
 	previoustime.tv_sec=0;
@@ -79,21 +78,55 @@ void update(){//游戏逻辑
 }
 
 void render(){//渲染 
-	
-	InvalidateRect(main_hwnd,&rectt,true);//将整个窗口添加到更新区域 
-	
+	//窗口DC声明 
 	PAINTSTRUCT ps;
-    HDC hdc = BeginPaint(main_hwnd, &ps);//开始绘制，并调用更新区句柄 
+	InvalidateRect(main_hwnd,&rectt,true);//将整个窗口添加到更新区域 
+    HDC hdc = BeginPaint(main_hwnd, &ps);//开始绘制，并调用更新区句柄
+    //双缓冲DC声明 
+	HDC renderDC=CreateCompatibleDC(hdc);
+    HBITMAP renderBmp = CreateCompatibleBitmap(hdc, windowwidth, windowheight);
+    SelectObject(renderDC, renderBmp);
     
-    // All painting occurs here, between BeginPaint and EndPaint.
-
-    FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+1));
     
-	setrect(hdc,Vector2(pos,150),Vector2(pos+50,200),rgbcustom(255,0,0));
+	//在内存new出一片位图大小的空间
+	BYTE *pBuf=new BYTE[windowwidth*windowheight*3];//(DWORD)
+	    
+	//创建并填写位图信息 
+	BITMAPINFO bmpinfo;
+	ZeroMemory(&bmpinfo,sizeof(BITMAPINFO));
+	bmpinfo.bmiHeader.biBitCount=24;      //每个像素多少位，也可直接写24(RGB)或者32(RGBA)
+	bmpinfo.bmiHeader.biCompression=0;
+	bmpinfo.bmiHeader.biHeight=windowheight;
+	bmpinfo.bmiHeader.biPlanes=1;
+	bmpinfo.bmiHeader.biSizeImage=0;
+	bmpinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
+	bmpinfo.bmiHeader.biWidth=windowwidth;
+	//获取位图到内存DIB
+	GetDIBits(renderDC,renderBmp,0,bmpinfo.bmiHeader.biHeight,pBuf,(BITMAPINFO*)&bmpinfo,0);
 	
-	//painting end
-
-    EndPaint(main_hwnd, &ps);//结束绘制 
+	// All painting occurs here, between BeginPaint and EndPaint.
+	//beginpaint
+	for(int i=1;i<=windowwidth;i++){
+		for(int j=1;j<=windowheight;j++){
+			setbmppixel(pBuf,i,j,255,255,0);
+		}
+	}
+	setbmppixel(pBuf,99,99,0,0,0);
+	setbmppixel(pBuf,99,100,0,0,0);
+	setbmppixel(pBuf,100,99,0,0,0);
+	setbmppixel(pBuf,100,100,0,0,0);
+	//EndPaint
+	
+	//全图处理完毕读出到renderDC
+	SetDIBits(renderDC,renderBmp,0,bmpinfo.bmiHeader.biHeight,pBuf,(BITMAPINFO*)&bmpinfo,0);
+	delete []pBuf;
+	
+	BitBlt(hdc, 0, 0, windowwidth, windowheight, renderDC, 0, 0, SRCCOPY);//缓冲区显示 
+	
+    EndPaint(main_hwnd, &ps);//结束绘制，释放 更新区句柄
+    //释放双缓冲DC 
+    DeleteDC(renderDC);
+	DeleteObject(renderBmp);
 	return;
 }
 
@@ -108,8 +141,8 @@ DWORD WINAPI startLoop(LPVOID lpParamter){//主循环
 		previoustime = presenttime;
 		if(deltatime<1000){
 			
-			pos=deltatime/10+pos;//方块向右溜 
-			pos=min(pos,1400);//限位，别让它溜大了 
+			pos=(float)(deltatime/2)+pos;//方块向右溜 
+			pos=min(pos,windowwidth-50);//限位，别让它溜大了 
 			cout<<"deltatime:"<<deltatime<<"ms\n";
 		}
 		
@@ -127,7 +160,7 @@ DWORD WINAPI startLoop(LPVOID lpParamter){//主循环
 		//简单地显示fps 
 	    fps=floor(10000/ctt);
 	    cout<<"fps(average):"<<fps<<"\n";
-	    //if(deltatime<1000/targetfps) Sleep(1000/targetfps-deltatime);
+	    //if(fps>targetfps) Sleep(1000/targetfps-1000/fps);
 	}
     return 0L;
 }
@@ -156,7 +189,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         WS_OVERLAPPEDWINDOW,            // Window style
 
         // Size and position
-        -10, -3, 1920, 1080,
+        0, 0, windowwidth, windowheight,
 
         NULL,       // Parent window    
         NULL,       // Menu
