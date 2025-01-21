@@ -1,0 +1,5 @@
+# ninja log v5
+6	4083	7590094980375113	CMakeFiles/AeroPhysicalEngine.dir/APEmain.cpp.obj	d97f7175f9c1c3d3
+3268	3502	7589941102943799	AeroPhysicalEngine.exe	68e419472cdea9e
+3	653	7590166138150236	CMakeFiles/WindowsAPITest.dir/WindowsAPI.cpp.obj	6aaad9000b3f4a35
+3	225	7590172064780847	build.ninja	9508d0952d457279

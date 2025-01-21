@@ -106,15 +106,15 @@ void render(){//渲染
 	
 	// All painting occurs here, between BeginPaint and EndPaint.
 	//beginpaint
-	for(int i=1;i<=windowwidth;i++){
-		for(int j=1;j<=windowheight;j++){
-			setbmppixel(pBuf,i,j,255,255,0);
-		}
+//	for(int i=1;i<=windowwidth;i++){
+//		for(int j=1;j<=windowheight;j++){
+//			setbmppixel(pBuf,i,j,255,255,0);
+//		}
+//	}
+	for(int i = 0; i < 1000; i++){	//fps:我感觉要出逝 
+		Vector2 A = Vector2(100.0, 100.0), B = Vector2(100.0, 120.0), C = Vector2(200.0, 100.0);
+		settri(pBuf, A, B, C, 255, 255, 255);
 	}
-	setbmppixel(pBuf,99,99,0,0,0);
-	setbmppixel(pBuf,99,100,0,0,0);
-	setbmppixel(pBuf,100,99,0,0,0);
-	setbmppixel(pBuf,100,100,0,0,0);
 	//EndPaint
 	
 	//全图处理完毕读出到renderDC

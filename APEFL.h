@@ -3,7 +3,7 @@
 
 #include<Windows.h>
 #include<Mmsystem.h>
-//#include<Prnasnot.h>
+#include<Prnasnot.h>
 #include<T2embapi.h>
 #include<Tvout.h>
 #include<Windef.h>
@@ -206,5 +206,32 @@ void setbmppixel(BYTE pBuf[],int x, int y,BYTE r,BYTE g,BYTE b){
 	return;
 }
 
+void settri(BYTE pBuf[], Vector2 A, Vector2 B, Vector2 C, BYTE r, BYTE g, BYTE b){
+	if(A.x > B.x)	std::swap(A, B);
+	if(B.x > C.x)	std::swap(B, C);
+	if(A.x > B.x)	std::swap(A, B);
+	if(A.x == C.x)	return ;
+	float kAC = (A.y - C.y)/(A.x - C.x);
+	float dy = A.y + kAC * (B.x - A.x);
+	if(A.x != B.x){
+		float kAB = (A.y - B.y)/(A.x - B.x);
+		for(int i = ceil(A.x); i <= floor(B.x); i++){
+			int y1 = A.y + kAB * (i - A.x), y2 = A.y + kAC * (i - A.x);
+			for(int j = std::min(y1, y2); j <= std::max(y1, y2); j++){
+				setbmppixel(pBuf, i, j, r, g, b);
+			}
+		}
+	}
+	if(B.x != C.x){
+		float kBC = (B.y - C.y)/(B.x - C.x);
+		for(int i = ceil(B.x); i <= floor(C.x); i++){
+			int y1 = B.y + kBC * (i - B.x), y2 = dy + kAC * (i - B.x);
+			for(int j = std::min(y1, y2); j <= std::max(y1, y2); j++){
+				setbmppixel(pBuf, i, j, r, g, b);
+			}
+		}
+	}
+	return ;
+}
 
 #endif
