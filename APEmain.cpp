@@ -13,6 +13,14 @@ using namespace std;
 
 HWND main_hwnd;//唯一指定的窗口句柄 
 RECT rectt;//整个窗口的矩形 
+BYTE *pBuf=new BYTE[windowwidth*windowheight*3];
+PAINTSTRUCT ps;
+HDC hdc,renderDC;
+HBITMAP renderBmp;
+BITMAPINFO bmpinfo;
+queue<Task> rendertask[sideloopnum+1]; 
+bool loopstate[sideloopnum+1];
+bool sideloopcanrun;
 
 //deltatime系统 
 struct timeval previoustime,presenttime;
@@ -31,6 +39,33 @@ void init(){//初始化
 	rectt.bottom=windowheight;
 	rectt.left=0;
 	rectt.right=windowwidth;
+	
+	//窗口DC声明 
+	InvalidateRect(main_hwnd,&rectt,true);//将整个窗口添加到更新区域 
+    hdc = BeginPaint(main_hwnd, &ps);//开始绘制，并调用更新区句柄
+    //双缓冲DC声明
+	renderDC=CreateCompatibleDC(hdc);
+    renderBmp = CreateCompatibleBitmap(hdc, windowwidth, windowheight);
+    SelectObject(renderDC, renderBmp);	
+    
+    for(int i=1;i<=sideloopnum;i++){
+    	loopstate[i]=true;
+	}
+	sideloopcanrun=true;
+		
+	//获取位图到内存DIB
+	GetDIBits(renderDC,renderBmp,0,bmpinfo.bmiHeader.biHeight,pBuf,(BITMAPINFO*)&bmpinfo,0);
+    
+	//创建并填写位图信息 
+	
+	ZeroMemory(&bmpinfo,sizeof(BITMAPINFO));
+	bmpinfo.bmiHeader.biBitCount=24;      //每个像素多少位，也可直接写24(RGB)或者32(RGBA)
+	bmpinfo.bmiHeader.biCompression=0;
+	bmpinfo.bmiHeader.biHeight=windowheight;
+	bmpinfo.bmiHeader.biPlanes=1;
+	bmpinfo.bmiHeader.biSizeImage=0;
+	bmpinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
+	bmpinfo.bmiHeader.biWidth=windowwidth;
 		
 	//初始化deltatime系统和fps系统防止逻辑爆炸 
 	previoustime.tv_sec=0;
@@ -42,7 +77,7 @@ void init(){//初始化
 	previoustime = presenttime;
 	pos=0;
 	for(int i=0;i<10;i++){
-		last10dt.push(1000/targetfps);
+		last10dt.push(1000);
 	}
 	fps=0;
 	
@@ -69,98 +104,141 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)/
 }
 
 void update(){//游戏逻辑 
-	int t=0;
-	for(int i=0;i++;i<10000000){
-		t++;
-	} 
+	
 	
 	return;
 }
 
 void render(){//渲染 
-	//窗口DC声明 
-	PAINTSTRUCT ps;
-	InvalidateRect(main_hwnd,&rectt,true);//将整个窗口添加到更新区域 
-    HDC hdc = BeginPaint(main_hwnd, &ps);//开始绘制，并调用更新区句柄
-    //双缓冲DC声明 
-	HDC renderDC=CreateCompatibleDC(hdc);
-    HBITMAP renderBmp = CreateCompatibleBitmap(hdc, windowwidth, windowheight);
-    SelectObject(renderDC, renderBmp);
-    
-    
-	//在内存new出一片位图大小的空间
-	BYTE *pBuf=new BYTE[windowwidth*windowheight*3];//(DWORD)
-	    
-	//创建并填写位图信息 
-	BITMAPINFO bmpinfo;
-	ZeroMemory(&bmpinfo,sizeof(BITMAPINFO));
-	bmpinfo.bmiHeader.biBitCount=24;      //每个像素多少位，也可直接写24(RGB)或者32(RGBA)
-	bmpinfo.bmiHeader.biCompression=0;
-	bmpinfo.bmiHeader.biHeight=windowheight;
-	bmpinfo.bmiHeader.biPlanes=1;
-	bmpinfo.bmiHeader.biSizeImage=0;
-	bmpinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
-	bmpinfo.bmiHeader.biWidth=windowwidth;
-	//获取位图到内存DIB
-	GetDIBits(renderDC,renderBmp,0,bmpinfo.bmiHeader.biHeight,pBuf,(BITMAPINFO*)&bmpinfo,0);
-	
-	// All painting occurs here, between BeginPaint and EndPaint.
-	//beginpaint
-//	for(int i=1;i<=windowwidth;i++){
-//		for(int j=1;j<=windowheight;j++){
-//			setbmppixel(pBuf,i,j,255,255,0);
-//		}
-//	}
-	for(int i = 0; i < 1000; i++){	//fps:我感觉要出逝 
-		Vector2 A = Vector2(100.0, 100.0), B = Vector2(100.0, 120.0), C = Vector2(200.0, 100.0);
-		settri(pBuf, A, B, C, 255, 255, 255);
-	}
-	//EndPaint
 	
 	//全图处理完毕读出到renderDC
 	SetDIBits(renderDC,renderBmp,0,bmpinfo.bmiHeader.biHeight,pBuf,(BITMAPINFO*)&bmpinfo,0);
-	delete []pBuf;
 	
 	BitBlt(hdc, 0, 0, windowwidth, windowheight, renderDC, 0, 0, SRCCOPY);//缓冲区显示 
 	
     EndPaint(main_hwnd, &ps);//结束绘制，释放 更新区句柄
-    //释放双缓冲DC 
-    DeleteDC(renderDC);
-	DeleteObject(renderBmp);
+    
+    //窗口DC声明 
+	InvalidateRect(main_hwnd,&rectt,true);//将整个窗口添加到更新区域 
+    hdc = BeginPaint(main_hwnd, &ps);//开始绘制，并调用更新区句柄
+    //双缓冲DC声明
+	renderDC=CreateCompatibleDC(hdc);
+    renderBmp = CreateCompatibleBitmap(hdc, windowwidth, windowheight);
+    SelectObject(renderDC, renderBmp);		 
+	
 	return;
 }
 
-DWORD WINAPI startLoop(LPVOID lpParamter){//主循环
+void settask(){
+	sideloopcanrun=false; 
+	// All painting occurs here, between BeginPaint and EndPaint.
+	//beginpaint
+	int corecount=1;
+	
+	for(int i = 0; i < 1000; i++){	//fps:我感觉要出逝 
+		Task taskt;
+		taskt.A = Vector2(100.0, 100.0);
+		taskt.B = Vector2(100.0, 120.0);
+		taskt.C = Vector2(200.0, 100.0);
+		taskt.r=255;
+		taskt.g=255;
+		taskt.b=255;
+		
+		rendertask[corecount].push(taskt);
+		
+		corecount%=sideloopnum;
+		corecount++;
+	}
+	//EndPaint
+	sideloopcanrun=true;
+	
+	return;
+}
+
+//loop begin
+DWORD WINAPI sideLoop1(LPVOID lpParamter){//副循环1
     while(1){
-		update();//游戏逻辑 
-		render();//渲染 
-		
-		//以下这坨都是维护deltatime系统和fps系统的操作 
-		gettimeofday(&presenttime, NULL);
-		deltatime = (presenttime.tv_sec*1000)+(presenttime.tv_usec/1000)-(previoustime.tv_sec*1000)-(previoustime.tv_usec/1000);
-		previoustime = presenttime;
-		if(deltatime<1000){
+    	if(sideloopcanrun)
+    	if(!rendertask[1].empty()){
+    		Task taskt=rendertask[1].front();
+    		rendertask[1].pop();
+    		settri(pBuf, taskt.A, taskt.B, taskt.C, taskt.r, taskt.g, taskt.b);
+    		loopstate[1]=false;
+		}else{
+			loopstate[1]=true;
+		}
+	}
+    return 0L;
+}
+
+DWORD WINAPI sideLoop2(LPVOID lpParamter){//副循环2
+    while(1){
+    	if(sideloopcanrun)
+    	if(!rendertask[2].empty()){
+    		Task taskt=rendertask[2].front();
+    		rendertask[2].pop();
+    		settri(pBuf, taskt.A, taskt.B, taskt.C, taskt.r, taskt.g, taskt.b);
+    		loopstate[2]=false;
+		}else{
+			loopstate[2]=true;
+		}
+	}
+    return 0L;
+}
+
+DWORD WINAPI sideLoop3(LPVOID lpParamter){//副循环3
+    while(1){
+    	if(sideloopcanrun)
+    	if(!rendertask[3].empty()){
+    		Task taskt=rendertask[3].front();
+    		rendertask[3].pop();
+    		settri(pBuf, taskt.A, taskt.B, taskt.C, taskt.r, taskt.g, taskt.b);
+    		loopstate[3]=false;
+		}else{
+			loopstate[3]=true;
+		}
+	}
+    return 0L;
+}
+//loop end
+
+DWORD WINAPI mainLoop(LPVOID lpParamter){//主循环
+    while(1){
+		update();//游戏逻辑
+		bool Permit=true;
+		for(int i=1;i<=sideloopnum;i++){
+			if(!loopstate[i]) Permit=false;
+		}
+		if(Permit){
+			render();//渲染
+			settask();
+			//以下这坨都是维护deltatime系统和fps系统的操作 
 			
-			pos=(float)(deltatime/2)+pos;//方块向右溜 
-			pos=min(pos,windowwidth-50);//限位，别让它溜大了 
-			cout<<"deltatime:"<<deltatime<<"ms\n";
+			
+			gettimeofday(&presenttime, NULL);
+			deltatime = (presenttime.tv_sec*1000)+(presenttime.tv_usec/1000)-(previoustime.tv_sec*1000)-(previoustime.tv_usec/1000);
+			previoustime = presenttime;
+			if(deltatime<1000){
+				cout<<"deltatime:"<<deltatime<<"ms\n";
+			}
+			
+		    last10dt.pop();//这坨你不用看懂，更不要动 
+		    int ctt=0;
+		    for(int i=0;i<9;i++){
+		    	int tt=last10dt.front();
+		    	last10dt.pop();
+		    	ctt+=tt;
+		    	last10dt.push(tt);
+			}
+			ctt+=deltatime;
+			last10dt.push(deltatime);
+			
+			//简单地显示fps 
+		    fps=floor(10000/ctt);
+		    cout<<"fps(average):"<<fps<<"\n";
+		    //if(fps>targetfps) Sleep(1000/targetfps-1000/fps);
 		}
 		
-	    last10dt.pop();//这坨你不用看懂，更不要动 
-	    int ctt=0;
-	    for(int i=0;i<9;i++){
-	    	int tt=last10dt.front();
-	    	last10dt.pop();
-	    	ctt+=tt;
-	    	last10dt.push(tt);
-		}
-		ctt+=deltatime;
-		last10dt.push(deltatime);
-		
-		//简单地显示fps 
-	    fps=floor(10000/ctt);
-	    cout<<"fps(average):"<<fps<<"\n";
-	    //if(fps>targetfps) Sleep(1000/targetfps-1000/fps);
 	}
     return 0L;
 }
@@ -205,8 +283,20 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     
     init();//初始化 
     
-    HANDLE hThread = CreateThread(NULL, 0, startLoop, NULL, 0, NULL);//将loop塞进线程并推入cpu栈 
-    CloseHandle(hThread);//释放线程 
+    HANDLE hThreadmain = CreateThread(NULL, 0, mainLoop, NULL, 0, NULL);//将loop塞进线程并推入cpu栈 
+    CloseHandle(hThreadmain);//释放线程 
+    if(sideloopnum>=1){
+    	HANDLE hThreadside1 = CreateThread(NULL, 0, sideLoop1, NULL, 0, NULL);//将loop塞进线程并推入cpu栈 
+   		CloseHandle(hThreadside1);//释放线程 
+   		if(sideloopnum>=2){
+   			HANDLE hThreadside2 = CreateThread(NULL, 0, sideLoop2, NULL, 0, NULL);//将loop塞进线程并推入cpu栈 
+   			CloseHandle(hThreadside2);//释放线程
+   			if(sideloopnum>=3){
+	   			HANDLE hThreadside3 = CreateThread(NULL, 0, sideLoop3, NULL, 0, NULL);//将loop塞进线程并推入cpu栈 
+	   			CloseHandle(hThreadside3);//释放线程
+			}
+		}
+	}
 
     ShowWindow(hwnd, nCmdShow);
 

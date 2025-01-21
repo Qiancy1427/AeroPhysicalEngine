@@ -16,9 +16,10 @@
 #define APEFL  1
 
 
-#define targetfps 20
+#define targetfps 60
 #define windowwidth 1900
 #define windowheight 1000
+#define sideloopnum 1
 
 
 //classify vector starting
@@ -152,6 +153,14 @@ class Vector2 {//classify Vector2
 		return vt;
 	}
 //classify vector ending
+
+//classify Task starting
+	class Task {//classify Task
+	public:
+	    Vector2 A, B, C;
+	    BYTE r,g,b;
+	};
+//classify Task ending
  
 struct NBT {//define NBT
     std::string name;
@@ -210,23 +219,34 @@ void settri(BYTE pBuf[], Vector2 A, Vector2 B, Vector2 C, BYTE r, BYTE g, BYTE b
 	if(A.x > B.x)	std::swap(A, B);
 	if(B.x > C.x)	std::swap(B, C);
 	if(A.x > B.x)	std::swap(A, B);
-	if(A.x == C.x)	return ;
+	if(A.x == C.x)	return;
+	
+	int minx,maxx,miny,maxy;
+	
 	float kAC = (A.y - C.y)/(A.x - C.x);
 	float dy = A.y + kAC * (B.x - A.x);
 	if(A.x != B.x){
 		float kAB = (A.y - B.y)/(A.x - B.x);
-		for(int i = ceil(A.x); i <= floor(B.x); i++){
-			int y1 = A.y + kAB * (i - A.x), y2 = A.y + kAC * (i - A.x);
-			for(int j = std::min(y1, y2); j <= std::max(y1, y2); j++){
+		minx=ceil(A.x);
+		maxx=floor(B.x);
+		for(int i = minx; i <= maxx; i++){
+			float y1 = A.y + kAB * (i - A.x), y2 = A.y + kAC * (i - A.x);
+			miny=ceil(std::min(y1, y2));
+			maxy=floor(std::max(y1, y2));
+			for(int j = miny; j <= maxy; j++){
 				setbmppixel(pBuf, i, j, r, g, b);
 			}
 		}
 	}
 	if(B.x != C.x){
 		float kBC = (B.y - C.y)/(B.x - C.x);
-		for(int i = ceil(B.x); i <= floor(C.x); i++){
-			int y1 = B.y + kBC * (i - B.x), y2 = dy + kAC * (i - B.x);
-			for(int j = std::min(y1, y2); j <= std::max(y1, y2); j++){
+		minx=ceil(B.x);
+		maxx=floor(C.x);
+		for(int i = minx; i <= maxx; i++){
+			float y1 = C.y + kBC * (i - C.x), y2 = C.y + kAC * (i - C.x);
+			miny=ceil(std::min(y1, y2));
+			maxy=floor(std::max(y1, y2));
+			for(int j = miny; j <= maxy; j++){
 				setbmppixel(pBuf, i, j, r, g, b);
 			}
 		}
