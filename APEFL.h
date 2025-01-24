@@ -16,10 +16,9 @@
 #define APEFL  1
 
 
-#define targetfps 60
+#define targetfps 20
 #define windowwidth 1900
 #define windowheight 1000
-#define sideloopnum 1
 
 
 //classify vector starting
@@ -196,15 +195,6 @@ COLORREF rgbcustom(short r,short g,short b){
 	
 	return rgbt;
 } 
-
-void setrect(HDC hdc,Vector2 poslt,Vector2 posrb,COLORREF color){
-	for(int i=round(poslt.y);i<=round(posrb.y);i++){
-		for(int j=round(poslt.x);j<=round(posrb.x);j++){
-			SetPixel(hdc,j,i,color);
-		}
-	}
-	return;
-}
 
 void setbmppixel(BYTE pBuf[],int x, int y,BYTE r,BYTE g,BYTE b){
 	int k=((windowheight-y)*windowwidth+x)*3;

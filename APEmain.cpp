@@ -15,20 +15,17 @@ HWND main_hwnd;//唯一指定的窗口句柄
 RECT rectt;//整个窗口的矩形 
 BYTE *pBuf=new BYTE[windowwidth*windowheight*3];
 PAINTSTRUCT ps;
-HDC hdc,renderDC;
+HDC hdc,renderDC;//双缓冲DC 
 HBITMAP renderBmp;
 BITMAPINFO bmpinfo;
-queue<Task> rendertask[sideloopnum+1]; 
-bool loopstate[sideloopnum+1];
-bool sideloopcanrun;
 
 //deltatime系统 
-struct timeval previoustime,presenttime;
-int deltatime;
+struct timeval render_previoustime,render_presenttime,logic_previoustime,logic_presenttime;
+int render_deltatime,logic_deltatime;
 
 //fps系统（基于deltatime系统） 
-queue<int> last10dt;
-int fps;
+queue<int> render_last20dt,logic_last20dt;
+int render_fps,logic_fps;
 
 
 int pos;//临时的方块x位置 
@@ -48,10 +45,6 @@ void init(){//初始化
     renderBmp = CreateCompatibleBitmap(hdc, windowwidth, windowheight);
     SelectObject(renderDC, renderBmp);	
     
-    for(int i=1;i<=sideloopnum;i++){
-    	loopstate[i]=true;
-	}
-	sideloopcanrun=true;
 		
 	//获取位图到内存DIB
 	GetDIBits(renderDC,renderBmp,0,bmpinfo.bmiHeader.biHeight,pBuf,(BITMAPINFO*)&bmpinfo,0);
@@ -68,18 +61,28 @@ void init(){//初始化
 	bmpinfo.bmiHeader.biWidth=windowwidth;
 		
 	//初始化deltatime系统和fps系统防止逻辑爆炸 
-	previoustime.tv_sec=0;
-	previoustime.tv_usec=0;
-	presenttime.tv_sec=0;
-	presenttime.tv_usec=0;
-	gettimeofday(&presenttime, NULL);
-	deltatime = (presenttime.tv_sec*1000)+(presenttime.tv_usec/1000)-(previoustime.tv_sec*1000)-(previoustime.tv_usec/1000);
-	previoustime = presenttime;
-	pos=0;
-	for(int i=0;i<10;i++){
-		last10dt.push(1000);
+	render_previoustime.tv_sec=0;
+	render_previoustime.tv_usec=0;
+	render_presenttime.tv_sec=0;
+	render_presenttime.tv_usec=0;
+	gettimeofday(&render_presenttime, NULL);
+	render_deltatime = (render_presenttime.tv_sec*1000)+(render_presenttime.tv_usec/1000)-(render_previoustime.tv_sec*1000)-(render_previoustime.tv_usec/1000);
+	render_previoustime = render_presenttime;
+	for(int i=0;i<20;i++){
+		render_last20dt.push(1000/targetfps);
 	}
-	fps=0;
+	render_fps=0;
+	logic_previoustime.tv_sec=0;
+	logic_previoustime.tv_usec=0;
+	logic_presenttime.tv_sec=0;
+	logic_presenttime.tv_usec=0;
+	gettimeofday(&logic_presenttime, NULL);
+	logic_deltatime = (logic_presenttime.tv_sec*1000)+(logic_presenttime.tv_usec/1000)-(logic_previoustime.tv_sec*1000)-(logic_previoustime.tv_usec/1000);
+	logic_previoustime = logic_presenttime;
+	for(int i=0;i<20;i++){
+		logic_last20dt.push(1000/targetfps);
+	}
+	logic_fps=0;
 	
 	return;
 }
@@ -103,13 +106,29 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)/
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-void update(){//游戏逻辑 
+void logic(){//游戏逻辑 
 	
 	
 	return;
 }
 
 void render(){//渲染 
+	//窗口DC声明 
+	InvalidateRect(main_hwnd,&rectt,true);//将整个窗口添加到更新区域 
+    hdc = BeginPaint(main_hwnd, &ps);//开始绘制，并调用更新区句柄
+    //双缓冲DC声明
+	renderDC=CreateCompatibleDC(hdc);
+    renderBmp = CreateCompatibleBitmap(hdc, windowwidth, windowheight);
+    SelectObject(renderDC, renderBmp);	
+	
+	// All painting occurs here, between BeginPaint and EndPaint.
+	//beginpaint
+	int corecount=1;
+	
+	for(int i = 0; i < 1000; i++){	//fps:我感觉要出逝 
+		settri(pBuf, Vector2(100.0, 100.0), Vector2(100.0, 120.0), Vector2(200.0, 100.0), 255, 255, 255);
+	}
+	//EndPaint
 	
 	//全图处理完毕读出到renderDC
 	SetDIBits(renderDC,renderBmp,0,bmpinfo.bmiHeader.biHeight,pBuf,(BITMAPINFO*)&bmpinfo,0);
@@ -118,43 +137,11 @@ void render(){//渲染
 	
     EndPaint(main_hwnd, &ps);//结束绘制，释放 更新区句柄
     
-    //窗口DC声明 
-	InvalidateRect(main_hwnd,&rectt,true);//将整个窗口添加到更新区域 
-    hdc = BeginPaint(main_hwnd, &ps);//开始绘制，并调用更新区句柄
-    //双缓冲DC声明
-	renderDC=CreateCompatibleDC(hdc);
-    renderBmp = CreateCompatibleBitmap(hdc, windowwidth, windowheight);
-    SelectObject(renderDC, renderBmp);		 
+    
 	
 	return;
 }
-
-void settask(){
-	sideloopcanrun=false; 
-	// All painting occurs here, between BeginPaint and EndPaint.
-	//beginpaint
-	int corecount=1;
-	
-	for(int i = 0; i < 1000; i++){	//fps:我感觉要出逝 
-		Task taskt;
-		taskt.A = Vector2(100.0, 100.0);
-		taskt.B = Vector2(100.0, 120.0);
-		taskt.C = Vector2(200.0, 100.0);
-		taskt.r=255;
-		taskt.g=255;
-		taskt.b=255;
-		
-		rendertask[corecount].push(taskt);
-		
-		corecount%=sideloopnum;
-		corecount++;
-	}
-	//EndPaint
-	sideloopcanrun=true;
-	
-	return;
-}
-
+/* 
 //loop begin
 DWORD WINAPI sideLoop1(LPVOID lpParamter){//副循环1
     while(1){
@@ -201,48 +188,72 @@ DWORD WINAPI sideLoop3(LPVOID lpParamter){//副循环3
     return 0L;
 }
 //loop end
+*/
 
-DWORD WINAPI mainLoop(LPVOID lpParamter){//主循环
+DWORD WINAPI renderLoop(LPVOID lpParamter){//渲染主循环
     while(1){
-		update();//游戏逻辑
-		bool Permit=true;
-		for(int i=1;i<=sideloopnum;i++){
-			if(!loopstate[i]) Permit=false;
+		render();//渲染
+		//以下这坨都是维护deltatime系统和fps系统的操作 
+		gettimeofday(&render_presenttime, NULL);
+		render_deltatime = (render_presenttime.tv_sec*1000)+(render_presenttime.tv_usec/1000)-(render_previoustime.tv_sec*1000)-(render_previoustime.tv_usec/1000);
+		render_previoustime = render_presenttime;
+		if(render_deltatime<1000){
+			cout<<"render deltatime:"<<render_deltatime<<"ms\n";
 		}
-		if(Permit){
-			render();//渲染
-			settask();
-			//以下这坨都是维护deltatime系统和fps系统的操作 
-			
-			
-			gettimeofday(&presenttime, NULL);
-			deltatime = (presenttime.tv_sec*1000)+(presenttime.tv_usec/1000)-(previoustime.tv_sec*1000)-(previoustime.tv_usec/1000);
-			previoustime = presenttime;
-			if(deltatime<1000){
-				cout<<"deltatime:"<<deltatime<<"ms\n";
-			}
-			
-		    last10dt.pop();//这坨你不用看懂，更不要动 
-		    int ctt=0;
-		    for(int i=0;i<9;i++){
-		    	int tt=last10dt.front();
-		    	last10dt.pop();
-		    	ctt+=tt;
-		    	last10dt.push(tt);
-			}
-			ctt+=deltatime;
-			last10dt.push(deltatime);
-			
-			//简单地显示fps 
-		    fps=floor(10000/ctt);
-		    cout<<"fps(average):"<<fps<<"\n";
-		    //if(fps>targetfps) Sleep(1000/targetfps-1000/fps);
+		
+	    render_last20dt.pop();//这坨你不用看懂，更不要动 
+	    int ctt=0;
+	    for(int i=0;i<19;i++){
+	    	int tt=render_last20dt.front();
+	    	render_last20dt.pop();
+	    	ctt+=tt;
+	    	render_last20dt.push(tt);
 		}
+		ctt+=render_deltatime;
+		render_last20dt.push(render_deltatime);
+		
+		//简单地显示fps 
+	    render_fps=floor(20000/ctt);
+	    cout<<"render fps(average):"<<render_fps<<"\n";
+	    //if(render_fps>targetfps) Sleep(1000/targetfps-1000/render_fps);
+		
 		
 	}
     return 0L;
 }
 
+DWORD WINAPI logicLoop(LPVOID lpParamter){//逻辑主循环
+    while(1){
+		logic();//游戏逻辑
+		//以下这坨都是维护deltatime系统和fps系统的操作 
+		gettimeofday(&logic_presenttime, NULL);
+		logic_deltatime = (logic_presenttime.tv_sec*1000)+(logic_presenttime.tv_usec/1000)-(logic_previoustime.tv_sec*1000)-(logic_previoustime.tv_usec/1000);
+		logic_previoustime = logic_presenttime;
+		
+	    logic_last20dt.pop();//这坨你不用看懂，更不要动 
+	    int ctt=0;
+	    for(int i=0;i<19;i++){
+	    	int tt=logic_last20dt.front();
+	    	logic_last20dt.pop();
+	    	ctt+=tt;
+	    	logic_last20dt.push(tt);
+		}
+		ctt+=logic_deltatime;
+	    if(ctt<20000/targetfps){
+			Sleep(20000/targetfps-ctt);
+	    	ctt=20000/targetfps;
+			logic_deltatime=20000/targetfps-ctt+logic_deltatime;
+		}
+		cout<<"logic deltatime:"<<logic_deltatime<<"ms\n";
+		logic_last20dt.push(logic_deltatime);
+		
+		//简单地显示fps 
+	    logic_fps=floor(20000/ctt);
+	    cout<<"logic fps(average):"<<logic_fps<<"\n";
+		
+	}
+    return 0L;
+}
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)//傀儡winapi 
 {
@@ -283,20 +294,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     
     init();//初始化 
     
-    HANDLE hThreadmain = CreateThread(NULL, 0, mainLoop, NULL, 0, NULL);//将loop塞进线程并推入cpu栈 
+    HANDLE hThreadmain = CreateThread(NULL, 0, renderLoop, NULL, 0, NULL);//将renderloop塞进线程并推入cpu栈 
     CloseHandle(hThreadmain);//释放线程 
-    if(sideloopnum>=1){
-    	HANDLE hThreadside1 = CreateThread(NULL, 0, sideLoop1, NULL, 0, NULL);//将loop塞进线程并推入cpu栈 
-   		CloseHandle(hThreadside1);//释放线程 
-   		if(sideloopnum>=2){
-   			HANDLE hThreadside2 = CreateThread(NULL, 0, sideLoop2, NULL, 0, NULL);//将loop塞进线程并推入cpu栈 
-   			CloseHandle(hThreadside2);//释放线程
-   			if(sideloopnum>=3){
-	   			HANDLE hThreadside3 = CreateThread(NULL, 0, sideLoop3, NULL, 0, NULL);//将loop塞进线程并推入cpu栈 
-	   			CloseHandle(hThreadside3);//释放线程
-			}
-		}
-	}
+    HANDLE hThreadmainadd = CreateThread(NULL, 0, logicLoop, NULL, 0, NULL);//将logicloop塞进线程并推入cpu栈 
+    CloseHandle(hThreadmainadd);//释放线程 
 
     ShowWindow(hwnd, nCmdShow);
 
