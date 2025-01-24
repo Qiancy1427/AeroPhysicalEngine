@@ -1,11 +1,3 @@
-#include<bits/stdc++.h>
-#include<windows.h>
-#include<winuser.h>
-#include<wingdi.h>
-#include<conio.h>
-
-#include<cstdlib>
-
 #include"APEFL.h"
 
 
@@ -27,8 +19,10 @@ int render_deltatime,logic_deltatime;
 queue<int> render_last20dt,logic_last20dt;
 int render_fps,logic_fps;
 
-
 int pos;//临时的方块x位置 
+
+//declare end
+//functions begin
 
 void init(){//初始化 
 	//设置整个窗口的矩形 
@@ -92,9 +86,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)/
     switch (uMsg)
     {
     case WM_DESTROY:
-        PostQuitMessage(0);//窗口还是得能关上的，windows api官方的东西就只能干这种杂鱼事了 
-        return 0;
-
+        PostQuitMessage(0);//窗口还是得能关上的，windows api官方的东西就只能干这种杂鱼事了 .
     case WM_PAINT:
         {
             //啥都没有，byd windows api 我才不在这写东西   		
@@ -125,8 +117,8 @@ void render(){//渲染
 	//beginpaint
 	int corecount=1;
 	
-	for(int i = 0; i < 1000; i++){	//fps:我感觉要出逝 
-		settri(pBuf, Vector2(100.0, 100.0), Vector2(100.0, 120.0), Vector2(200.0, 100.0), 255, 255, 255);
+	for(int i = 0; i < 10000; i++){	//fps:我感觉要出逝 
+		settri_quick(pBuf, Vector2(100.0, 100.0), Vector2(100.0, 200.0), Vector2(200.0, 100.0), 255, 255, 255);
 	}
 	//EndPaint
 	
@@ -135,71 +127,23 @@ void render(){//渲染
 	
 	BitBlt(hdc, 0, 0, windowwidth, windowheight, renderDC, 0, 0, SRCCOPY);//缓冲区显示 
 	
-    EndPaint(main_hwnd, &ps);//结束绘制，释放 更新区句柄
+    EndPaint(main_hwnd, &ps);//结束绘制，释放更新区句柄
     
     
 	
 	return;
 }
-/* 
-//loop begin
-DWORD WINAPI sideLoop1(LPVOID lpParamter){//副循环1
-    while(1){
-    	if(sideloopcanrun)
-    	if(!rendertask[1].empty()){
-    		Task taskt=rendertask[1].front();
-    		rendertask[1].pop();
-    		settri(pBuf, taskt.A, taskt.B, taskt.C, taskt.r, taskt.g, taskt.b);
-    		loopstate[1]=false;
-		}else{
-			loopstate[1]=true;
-		}
-	}
-    return 0L;
-}
 
-DWORD WINAPI sideLoop2(LPVOID lpParamter){//副循环2
-    while(1){
-    	if(sideloopcanrun)
-    	if(!rendertask[2].empty()){
-    		Task taskt=rendertask[2].front();
-    		rendertask[2].pop();
-    		settri(pBuf, taskt.A, taskt.B, taskt.C, taskt.r, taskt.g, taskt.b);
-    		loopstate[2]=false;
-		}else{
-			loopstate[2]=true;
-		}
-	}
-    return 0L;
-}
-
-DWORD WINAPI sideLoop3(LPVOID lpParamter){//副循环3
-    while(1){
-    	if(sideloopcanrun)
-    	if(!rendertask[3].empty()){
-    		Task taskt=rendertask[3].front();
-    		rendertask[3].pop();
-    		settri(pBuf, taskt.A, taskt.B, taskt.C, taskt.r, taskt.g, taskt.b);
-    		loopstate[3]=false;
-		}else{
-			loopstate[3]=true;
-		}
-	}
-    return 0L;
-}
-//loop end
-*/
+//functions end
+//entries begin
 
 DWORD WINAPI renderLoop(LPVOID lpParamter){//渲染主循环
     while(1){
 		render();//渲染
-		//以下这坨都是维护deltatime系统和fps系统的操作 
+		//以下这坨都是维护deltatime系统和fps系统的操作(render) 
 		gettimeofday(&render_presenttime, NULL);
 		render_deltatime = (render_presenttime.tv_sec*1000)+(render_presenttime.tv_usec/1000)-(render_previoustime.tv_sec*1000)-(render_previoustime.tv_usec/1000);
 		render_previoustime = render_presenttime;
-		if(render_deltatime<1000){
-			cout<<"render deltatime:"<<render_deltatime<<"ms\n";
-		}
 		
 	    render_last20dt.pop();//这坨你不用看懂，更不要动 
 	    int ctt=0;
@@ -211,12 +155,8 @@ DWORD WINAPI renderLoop(LPVOID lpParamter){//渲染主循环
 		}
 		ctt+=render_deltatime;
 		render_last20dt.push(render_deltatime);
-		
-		//简单地显示fps 
 	    render_fps=floor(20000/ctt);
-	    cout<<"render fps(average):"<<render_fps<<"\n";
-	    //if(render_fps>targetfps) Sleep(1000/targetfps-1000/render_fps);
-		
+	    cout<<"render deltatime:"<<render_deltatime<<"ms\n"<<"render fps(average):"<<render_fps<<"\n\n";
 		
 	}
     return 0L;
@@ -225,7 +165,7 @@ DWORD WINAPI renderLoop(LPVOID lpParamter){//渲染主循环
 DWORD WINAPI logicLoop(LPVOID lpParamter){//逻辑主循环
     while(1){
 		logic();//游戏逻辑
-		//以下这坨都是维护deltatime系统和fps系统的操作 
+		//以下这坨都是维护deltatime系统和fps系统的操作(logic)
 		gettimeofday(&logic_presenttime, NULL);
 		logic_deltatime = (logic_presenttime.tv_sec*1000)+(logic_presenttime.tv_usec/1000)-(logic_previoustime.tv_sec*1000)-(logic_previoustime.tv_usec/1000);
 		logic_previoustime = logic_presenttime;
@@ -244,12 +184,9 @@ DWORD WINAPI logicLoop(LPVOID lpParamter){//逻辑主循环
 	    	ctt=20000/targetfps;
 			logic_deltatime=20000/targetfps-ctt+logic_deltatime;
 		}
-		cout<<"logic deltatime:"<<logic_deltatime<<"ms\n";
 		logic_last20dt.push(logic_deltatime);
-		
-		//简单地显示fps 
 	    logic_fps=floor(20000/ctt);
-	    cout<<"logic fps(average):"<<logic_fps<<"\n";
+	    cout<<"logic deltatime:"<<logic_deltatime<<"ms\n"<<"logic fps(average):"<<logic_fps<<"\n\n";
 		
 	}
     return 0L;
@@ -274,7 +211,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     HWND hwnd = CreateWindowEx(
         0,                              // Optional window styles.
         CLASS_NAME,                     // Window class
-        L"APEmain",    // Window text
+        L"APEmain",    					// Window text
         WS_OVERLAPPEDWINDOW,            // Window style
 
         // Size and position
@@ -319,5 +256,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     return 0;
 }
 
+//entries end
 
 

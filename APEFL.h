@@ -1,5 +1,7 @@
 #include<bits/stdc++.h>
 #include<sys/time.h>
+#include<conio.h>
+#include<cstdlib>
 
 #include<Windows.h>
 #include<Mmsystem.h>
@@ -190,10 +192,7 @@ const COLORREF rgbBlack =  0x00000000;
 const COLORREF rgbWhite =  0x00FFFFFF;
 
 COLORREF rgbcustom(short r,short g,short b){
-	COLORREF rgbt;
-	rgbt = (int)(r+g*256+b*256*256); 
-	
-	return rgbt;
+	return r+g*256+b*256*256;
 } 
 
 void setbmppixel(BYTE pBuf[],int x, int y,BYTE r,BYTE g,BYTE b){
@@ -214,7 +213,6 @@ void settri(BYTE pBuf[], Vector2 A, Vector2 B, Vector2 C, BYTE r, BYTE g, BYTE b
 	int minx,maxx,miny,maxy;
 	
 	float kAC = (A.y - C.y)/(A.x - C.x);
-	float dy = A.y + kAC * (B.x - A.x);
 	if(A.x != B.x){
 		float kAB = (A.y - B.y)/(A.x - B.x);
 		minx=ceil(A.x);
@@ -241,7 +239,54 @@ void settri(BYTE pBuf[], Vector2 A, Vector2 B, Vector2 C, BYTE r, BYTE g, BYTE b
 			}
 		}
 	}
-	return ;
+	return;
+}
+
+void settri_quick(BYTE pBuf[], Vector2 A, Vector2 B, Vector2 C, BYTE r, BYTE g, BYTE b){
+	if(A.y > B.y)	std::swap(A, B);
+	if(B.y > C.y)	std::swap(B, C);
+	if(A.y > B.y)	std::swap(A, B);
+	if(A.y == C.y)	return;
+	
+	int minx,maxx,miny,maxy,i,j,k;
+	float x1,x2;
+	
+	float kAC = (A.x - C.x)/(A.y - C.y);
+	if(A.y != B.y){
+		float kAB = (A.x - B.x)/(A.y - B.y);
+		miny=ceil(A.y);
+		maxy=floor(B.y);
+		for(i = miny; i <= maxy; i++){
+			x1 = A.x + kAB * (i - A.y);
+			x2 = A.x + kAC * (i - A.y);
+			minx=ceil(std::min(x1, x2));
+			maxx=floor(std::max(x1, x2));
+			k=((windowheight-i)*windowwidth+minx)*3;
+			for(j = minx; j <= maxx; j++){
+				pBuf[k++]=b;
+				pBuf[k++]=g;
+				pBuf[k++]=r;
+			}
+		}
+	}
+	if(B.y != C.y){
+		float kBC = (B.x - C.x)/(B.y - C.y);
+		miny=ceil(B.y);
+		maxy=floor(C.y);
+		for(i = miny; i <= maxy; i++){
+			x1 = C.x + kBC * (i - C.y);
+			x2 = C.x + kAC * (i - C.y);
+			minx=ceil(std::min(x1, x2));
+			maxx=floor(std::max(x1, x2));
+			k=((windowheight-i)*windowwidth+minx)*3;
+			for(j = minx; j <= maxx; j++){
+				pBuf[k++]=b;
+				pBuf[k++]=g;
+				pBuf[k++]=r;
+			}
+		}
+	}
+	return;
 }
 
 #endif
