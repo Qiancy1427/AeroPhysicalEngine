@@ -31,7 +31,7 @@ class Vector2 {//classify Vector2
 	    Vector2 operator+ (Vector2 v1);
 	    Vector2 operator- (Vector2 v1);
 	    float operator* (Vector2 v1);
-	    Vector2 operator^ (float k);
+	    Vector2 operator$ (float k);//Êý³Ë 
 	    static void print(Vector2 v1);
 	    float x, y;
 	};
@@ -61,7 +61,7 @@ class Vector2 {//classify Vector2
 	    tmp = vt.x * v1.x + vt.y * v1.y;
 	    return tmp;
 	}
-	Vector2 Vector2::operator^(float k) {//Vector2 scalar multiplication
+	Vector2 Vector2::operator$(float k) {//Vector2 scalar multiplication
 	    Vector2 vt;
 	    vt.x = vt.x * k;
 	    vt.y = vt.y * k;
@@ -78,7 +78,7 @@ class Vector2 {//classify Vector2
 	    Vector3 operator+ (Vector3 v1);
 	    Vector3 operator- (Vector3 v1);
 	    float operator* (Vector3 v1);
-	    Vector3 operator^ (float k);
+	    Vector3 operator$ (float k);
 	    static void print(Vector3 v1);
 	    float x, y, z;
 	};
@@ -112,7 +112,7 @@ class Vector2 {//classify Vector2
 	    tmp = vt.x * v1.x + vt.y * v1.y + vt.z * v1.z;
 	    return tmp;
 	}
-	Vector3 Vector3::operator^(float k) {//Vector3 scalar multiplication
+	Vector3 Vector3::operator$(float k) {//Vector3 scalar multiplication
 	    Vector3 vt;
 	    vt.x = vt.x * k;
 	    vt.y = vt.y * k;
@@ -288,5 +288,66 @@ void settri_quick(BYTE pBuf[], Vector2 A, Vector2 B, Vector2 C, BYTE r, BYTE g, 
 	}
 	return;
 }
+//classify Matrix starting
+class Matrix{
+	public:
+		float factor[4][4];
+		Matrix();
+		Matrix(float *Fac);
+		Matrix operator+ (Matrix M2);
+		Matrix operator- (Matrix M2);
+		Matrix operator$ (int a); //Êý³Ë 
+		Matrix operator* (Matrix M2);
+};
+Matrix::Matrix(){
+	memset(factor, 0, sizeof(factor));
+}
+/* BUG HERE 
+Matrix::Matrix(float Fac[4][4]){
+	for(int i = 0; i < 4; i++){
+		for(int j = 0; j < 4; j++){
+			factor[i][j] = Fac[i][j];
+		}
+	}
+}*/
+Matrix Matrix::operator+(Matrix M2){
+	Matrix M1;
+	for(int i = 0; i < 4; i++){
+		for(int j = 0; j < 4; j++){
+			M1.factor[i][j] = M1.factor[i][j] + M2.factor[i][j];
+		}
+	}
+	return M1;
+}
+Matrix Matrix::operator-(Matrix M2){
+	Matrix M1;
+	for(int i = 0; i < 4; i++){
+		for(int j = 0; j < 4; j++){
+			M1.factor[i][j] = M1.factor[i][j] - M2.factor[i][j];
+		}
+	}
+	return M1;
+}
+Matrix Matrix::operator$(int a){
+	Matrix M1;
+	for(int i = 0; i < 4; i++){
+		for(int j = 0; j < 4; j++){
+			M1.factor[i][j] = M1.factor[i][j] * a;
+		}
+	}
+}
+Matrix Matrix::operator*(Matrix M2){
+	Matrix M1, M3;
+	memset(M3.factor, 0, sizeof(M3.factor));
+	for(int i = 0; i < 4; i++){
+		for(int j = 0; j < 4; j++){
+			for(int k = 0; k < 4; k++){
+				M3.factor[i][j] += (M1.factor[i][k] + M2.factor[k][j]);
+			}
+		}
+	}
+	return M3;
+}
+//classify Matrix ending
 
 #endif
