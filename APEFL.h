@@ -13,6 +13,7 @@
 #include<Wingdi.h>
 #include<Winuser.h>
 
+using namespace std;
 
 #ifndef APEFL   
 #define APEFL  1
@@ -22,151 +23,72 @@
 #define windowwidth 1900
 #define windowheight 1000
 
+//math define starting
 
-//classify vector starting
-class Vector2 {//classify Vector2
-	public:
-	    Vector2();
-	    Vector2(float a, float b);
-	    Vector2 operator+ (Vector2 v1);
-	    Vector2 operator- (Vector2 v1);
-	    float operator* (Vector2 v1);
-	    Vector2 operator$ (float k);//数乘 
-	    static void print(Vector2 v1);
-	    float x, y;
-	};
-	Vector2::Vector2() {//empty Vector2 
-	    x = 0;
-	    y = 0;
-	}
-	Vector2::Vector2(float a, float b) {//Vector2 container 
-	    x = a;
-	    y = b;
-	}
-	Vector2 Vector2::operator+(Vector2 v1) {//Vector2 addtion 
-	    Vector2 vt;
-	    vt.x = vt.x + v1.x;
-	    vt.y = vt.y + v1.y;
-	    return vt;
-	}
-	Vector2 Vector2::operator-(Vector2 v1) {//Vector2 subtraction
-	    Vector2 vt;
-	    vt.x = vt.x - v1.x;
-	    vt.y = vt.y - v1.y;
-	    return vt;
-	}
-	float Vector2::operator*(Vector2 v1) {//Vector2 dot production
-	    float tmp;
-	    Vector2 vt;
-	    tmp = vt.x * v1.x + vt.y * v1.y;
-	    return tmp;
-	}
-	Vector2 Vector2::operator$(float k) {//Vector2 scalar multiplication
-	    Vector2 vt;
-	    vt.x = vt.x * k;
-	    vt.y = vt.y * k;
-	    return vt;
-	}
-	void Vector2::print(Vector2 v1) {//print Vector2
-	    std::cout << "(" << v1.x << "," << v1.y << ")\n";
-	}
-	
-	class Vector3 {//classify Vector3
-	public:
-	    Vector3();
-	    Vector3(float a, float b, float c);
-	    Vector3 operator+ (Vector3 v1);
-	    Vector3 operator- (Vector3 v1);
-	    float operator* (Vector3 v1);
-	    Vector3 operator$ (float k);
-	    static void print(Vector3 v1);
-	    float x, y, z;
-	};
-	Vector3::Vector3() {//empty Vector3 
-	    x = 0;
-	    y = 0;
-	    z = 0;
-	}
-	Vector3::Vector3(float a, float b, float c) {//Vector3 container 
-	    x = a;
-	    y = b;
-	    z = c;
-	}
-	Vector3 Vector3::operator+(Vector3 v1) {//Vector3 addtion 
-	    Vector3 vt;
-	    vt.x = vt.x + v1.x;
-	    vt.y = vt.y + v1.y;
-	    vt.z = vt.z + v1.z;
-	    return vt;
-	}
-	Vector3 Vector3::operator-(Vector3 v1) {//Vector3 subtraction
-	    Vector3 vt;
-	    vt.x = vt.x - v1.x;
-	    vt.y = vt.y - v1.y;
-	    vt.z = vt.z - v1.z;
-	    return vt;
-	}
-	float Vector3::operator*(Vector3 v1) {//Vector3 dot production
-	    float tmp;
-	    Vector3 vt;
-	    tmp = vt.x * v1.x + vt.y * v1.y + vt.z * v1.z;
-	    return tmp;
-	}
-	Vector3 Vector3::operator$(float k) {//Vector3 scalar multiplication
-	    Vector3 vt;
-	    vt.x = vt.x * k;
-	    vt.y = vt.y * k;
-	    vt.z = vt.z * k;
-	    return vt;
-	}
-	void Vector3::print(Vector3 v1) {//print Vector3
-	    std::cout << "(" << v1.x << "," << v1.y << "," << v1.z << ")\n";
-	}
-	
-	class Vector4 {//classify Vector4
-	public:
-	    Vector4();
-	    Vector4(float a, float b, float c, float d);
-	    static void print(Vector4 v1);
-	    static Vector3 normalize(Vector4 v1);
-	    float x, y, z, w;
-	};
-	Vector4::Vector4() {//empty Vector4 
-	    x = 0;
-	    y = 0;
-	    z = 0;
-	    w = 1;
-	}
-	Vector4::Vector4(float a, float b, float c, float d) {//Vector4 container 
-	    x = a;
-	    y = b;
-	    z = c;
-	    w = d;
-	}
-	void Vector4::print(Vector4 v1) {//print Vector4
-	    std::cout << "(" << v1.x << "," << v1.y << "," << v1.z << "," << v1.w << ")\n";
-	}
-	Vector3 Vector4::normalize(Vector4 v1) {//Vector4 narmalization
-		Vector3 vt;
-		vt.x=v1.x/v1.w;
-		vt.y=v1.y/v1.w;
-		vt.z=v1.z/v1.w;
-		return vt;
-	}
-//classify vector ending
+struct Vector{//向量 
+	float cont[4];
+};
 
-//classify Task starting
-	class Task {//classify Task
-	public:
-	    Vector2 A, B, C;
-	    BYTE r,g,b;
-	};
-//classify Task ending
- 
+struct Matrix{//矩阵 
+	float fact[4][4];
+};
+
+Vector vec_nor(Vector V){//向量归一化 
+	return Vector{V.cont[0]/V.cont[3], V.cont[1]/V.cont[3], V.cont[2]/V.cont[3], 1};
+}
+
+Vector vec_add(Vector A, Vector B){//向量加法（限归一化后） 
+	return Vector{A.cont[0] + B.cont[0], A.cont[1] + B.cont[1], A.cont[2] + B.cont[2], 1};
+}
+
+Vector vec_sub(Vector A, Vector B){//向量减法（限归一化后） 
+	return Vector{A.cont[0] - B.cont[0], A.cont[1] - B.cont[1], A.cont[2] - B.cont[2], 1};
+}
+
+Vector vec_scapro(Vector V, float num){//向量数乘（限归一化后） 
+	return Vector{V.cont[0]*num, V.cont[1]*num, V.cont[2]*num, 1};
+}
+
+float vec_dotpro(Vector A, Vector B, int size){//向量点乘（size决定维数(size<=3)）（限归一化后） 
+	float res;
+	while(size>0){
+		res+=A.cont[--size]*B.cont[size];
+	} 
+	return res;
+}
+
+Vector vec_cropro(Vector A, Vector B){//向量叉乘（限三维）（限归一化后） 
+	return Vector{A.cont[1]*B.cont[2] - A.cont[2]*B.cont[1], A.cont[2]*B.cont[0] - A.cont[0]*B.cont[2], A.cont[0]*B.cont[1] - A.cont[1]*B.cont[0], 1};
+}
+
+Matrix mat_scapro(Matrix M, float num){//矩阵数乘
+	return Matrix{M.fact[0][0]*num, M.fact[0][1]*num, M.fact[0][2]*num, M.fact[0][3]*num, M.fact[1][0]*num, M.fact[1][1]*num, M.fact[1][2]*num, M.fact[1][3]*num, M.fact[2][0]*num, M.fact[2][1]*num, M.fact[2][2]*num, M.fact[2][3]*num, M.fact[3][0]*num, M.fact[3][1]*num, M.fact[3][2]*num, M.fact[3][3]*num};
+}
+
+Matrix mat_dotpro(Matrix M1, Matrix M2, int sizex1, int sizey1, int sizex2, int sizey2){//矩阵点乘
+	Matrix res=Matrix{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	if(sizey1!=sizex2) return res;
+	for(int i=0;i<sizex1;i++){
+		for(int j=0;j<sizey2;j++){
+			for(int k=0;k<sizey1;k++){
+				res.fact[i][j]+=M1.fact[i][k]*M2.fact[k][j];
+			} 
+		}
+	}
+	return res;
+}
+
+Vector mat_vec_pro(Matrix M,Vector V){//矩阵-向量乘法 
+	return Vector{M.fact[0][0]*V.cont[0] + M.fact[0][1]*V.cont[1] + M.fact[0][2]*V.cont[2] + M.fact[0][3]*V.cont[3], M.fact[1][0]*V.cont[0] + M.fact[1][1]*V.cont[1] + M.fact[1][2]*V.cont[2] + M.fact[1][3]*V.cont[3], M.fact[2][0]*V.cont[0] + M.fact[2][1]*V.cont[1] + M.fact[2][2]*V.cont[2] + M.fact[2][3]*V.cont[3], M.fact[3][0]*V.cont[0] + M.fact[3][1]*V.cont[1] + M.fact[3][2]*V.cont[2] + M.fact[3][3]*V.cont[3]};
+}
+
+
+//math define ending
+
 struct NBT {//define NBT
     std::string name;
-    Vector4 data;
-    NBT(std::string st, Vector4 qt){//NBT constructor
+    Vector data;
+    NBT(std::string st, Vector qt){//NBT constructor
 
         name = st;
         data = qt;
@@ -204,21 +126,21 @@ void setbmppixel(BYTE pBuf[],int x, int y,BYTE r,BYTE g,BYTE b){
 	return;
 }
 
-void settri(BYTE pBuf[], Vector2 A, Vector2 B, Vector2 C, BYTE r, BYTE g, BYTE b){
-	if(A.x > B.x)	std::swap(A, B);
-	if(B.x > C.x)	std::swap(B, C);
-	if(A.x > B.x)	std::swap(A, B);
-	if(A.x == C.x)	return;
+void settri(BYTE pBuf[], Vector A, Vector B, Vector C, BYTE r, BYTE g, BYTE b){
+	if(A.cont[0] > B.cont[0])	std::swap(A, B);
+	if(B.cont[0] > C.cont[0])	std::swap(B, C);
+	if(A.cont[0] > B.cont[0])	std::swap(A, B);
+	if(A.cont[0] == C.cont[0])	return;
 	
 	int minx,maxx,miny,maxy;
 	
-	float kAC = (A.y - C.y)/(A.x - C.x);
-	if(A.x != B.x){
-		float kAB = (A.y - B.y)/(A.x - B.x);
-		minx=ceil(A.x);
-		maxx=floor(B.x);
+	float kAC = (A.cont[1] - C.cont[1])/(A.cont[0] - C.cont[0]);
+	if(A.cont[0] != B.cont[0]){
+		float kAB = (A.cont[1] - B.cont[1])/(A.cont[0] - B.cont[0]);
+		minx=ceil(A.cont[0]);
+		maxx=floor(B.cont[0]);
 		for(int i = minx; i <= maxx; i++){
-			float y1 = A.y + kAB * (i - A.x), y2 = A.y + kAC * (i - A.x);
+			float y1 = A.cont[1] + kAB * (i - A.cont[0]), y2 = A.cont[1] + kAC * (i - A.cont[0]);
 			miny=ceil(std::min(y1, y2));
 			maxy=floor(std::max(y1, y2));
 			for(int j = miny; j <= maxy; j++){
@@ -226,12 +148,12 @@ void settri(BYTE pBuf[], Vector2 A, Vector2 B, Vector2 C, BYTE r, BYTE g, BYTE b
 			}
 		}
 	}
-	if(B.x != C.x){
-		float kBC = (B.y - C.y)/(B.x - C.x);
-		minx=ceil(B.x);
-		maxx=floor(C.x);
+	if(B.cont[0] != C.cont[0]){
+		float kBC = (B.cont[1] - C.cont[1])/(B.cont[0] - C.cont[0]);
+		minx=ceil(B.cont[0]);
+		maxx=floor(C.cont[0]);
 		for(int i = minx; i <= maxx; i++){
-			float y1 = C.y + kBC * (i - C.x), y2 = C.y + kAC * (i - C.x);
+			float y1 = C.cont[1] + kBC * (i - C.cont[0]), y2 = C.cont[1] + kAC * (i - C.cont[0]);
 			miny=ceil(std::min(y1, y2));
 			maxy=floor(std::max(y1, y2));
 			for(int j = miny; j <= maxy; j++){
@@ -242,23 +164,23 @@ void settri(BYTE pBuf[], Vector2 A, Vector2 B, Vector2 C, BYTE r, BYTE g, BYTE b
 	return;
 }
 
-void settri_quick(BYTE pBuf[], Vector2 A, Vector2 B, Vector2 C, BYTE r, BYTE g, BYTE b){
-	if(A.y > B.y)	std::swap(A, B);
-	if(B.y > C.y)	std::swap(B, C);
-	if(A.y > B.y)	std::swap(A, B);
-	if(A.y == C.y)	return;
+void settri_quick(BYTE pBuf[], Vector A, Vector B, Vector C, BYTE r, BYTE g, BYTE b){
+	if(A.cont[1] > B.cont[1])	std::swap(A, B);
+	if(B.cont[1] > C.cont[1])	std::swap(B, C);
+	if(A.cont[1] > B.cont[1])	std::swap(A, B);
+	if(A.cont[1] == C.cont[1])	return;
 	
 	int minx,maxx,miny,maxy,i,j,k;
 	float x1,x2;
 	
-	float kAC = (A.x - C.x)/(A.y - C.y);
-	if(A.y != B.y){
-		float kAB = (A.x - B.x)/(A.y - B.y);
-		miny=ceil(A.y);
-		maxy=floor(B.y);
+	float kAC = (A.cont[0] - C.cont[0])/(A.cont[1] - C.cont[1]);
+	if(A.cont[1] != B.cont[1]){
+		float kAB = (A.cont[0] - B.cont[0])/(A.cont[1] - B.cont[1]);
+		miny=ceil(A.cont[1]);
+		maxy=floor(B.cont[1]);
 		for(i = miny; i <= maxy; i++){
-			x1 = A.x + kAB * (i - A.y);
-			x2 = A.x + kAC * (i - A.y);
+			x1 = A.cont[0] + kAB * (i - A.cont[1]);
+			x2 = A.cont[0] + kAC * (i - A.cont[1]);
 			minx=ceil(std::min(x1, x2));
 			maxx=floor(std::max(x1, x2));
 			k=((windowheight-i)*windowwidth+minx)*3;
@@ -269,13 +191,13 @@ void settri_quick(BYTE pBuf[], Vector2 A, Vector2 B, Vector2 C, BYTE r, BYTE g, 
 			}
 		}
 	}
-	if(B.y != C.y){
-		float kBC = (B.x - C.x)/(B.y - C.y);
-		miny=ceil(B.y);
-		maxy=floor(C.y);
+	if(B.cont[1] != C.cont[1]){
+		float kBC = (B.cont[0] - C.cont[0])/(B.cont[1] - C.cont[1]);
+		miny=ceil(B.cont[1]);
+		maxy=floor(C.cont[1]);
 		for(i = miny; i <= maxy; i++){
-			x1 = C.x + kBC * (i - C.y);
-			x2 = C.x + kAC * (i - C.y);
+			x1 = C.cont[0] + kBC * (i - C.cont[1]);
+			x2 = C.cont[0] + kAC * (i - C.cont[1]);
 			minx=ceil(std::min(x1, x2));
 			maxx=floor(std::max(x1, x2));
 			k=((windowheight-i)*windowwidth+minx)*3;
@@ -288,66 +210,6 @@ void settri_quick(BYTE pBuf[], Vector2 A, Vector2 B, Vector2 C, BYTE r, BYTE g, 
 	}
 	return;
 }
-//classify Matrix starting
-class Matrix{
-	public:
-		float factor[4][4];
-		Matrix();
-		Matrix(float *Fac);
-		Matrix operator+ (Matrix M2);
-		Matrix operator- (Matrix M2);
-		Matrix operator$ (int a); //数乘 
-		Matrix operator* (Matrix M2);
-};
-Matrix::Matrix(){
-	memset(factor, 0, sizeof(factor));
-}
-/* BUG HERE 
-Matrix::Matrix(float Fac[4][4]){
-	for(int i = 0; i < 4; i++){
-		for(int j = 0; j < 4; j++){
-			factor[i][j] = Fac[i][j];
-		}
-	}
-}*/
-Matrix Matrix::operator+(Matrix M2){
-	Matrix M1;
-	for(int i = 0; i < 4; i++){
-		for(int j = 0; j < 4; j++){
-			M1.factor[i][j] = M1.factor[i][j] + M2.factor[i][j];
-		}
-	}
-	return M1;
-}
-Matrix Matrix::operator-(Matrix M2){
-	Matrix M1;
-	for(int i = 0; i < 4; i++){
-		for(int j = 0; j < 4; j++){
-			M1.factor[i][j] = M1.factor[i][j] - M2.factor[i][j];
-		}
-	}
-	return M1;
-}
-Matrix Matrix::operator$(int a){
-	Matrix M1;
-	for(int i = 0; i < 4; i++){
-		for(int j = 0; j < 4; j++){
-			M1.factor[i][j] = M1.factor[i][j] * a;
-		}
-	}
-}
-Matrix Matrix::operator*(Matrix M2){
-	Matrix M1, M3;
-	memset(M3.factor, 0, sizeof(M3.factor));
-	for(int i = 0; i < 4; i++){
-		for(int j = 0; j < 4; j++){
-			for(int k = 0; k < 4; k++){
-				M3.factor[i][j] += (M1.factor[i][k] + M2.factor[k][j]);
-			}
-		}
-	}
-	return M3;
-}
-//classify Matrix ending
+
 
 #endif

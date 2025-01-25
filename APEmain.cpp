@@ -1,6 +1,5 @@
 #include"APEFL.h"
 
-
 using namespace std;
 
 HWND main_hwnd;//唯一指定的窗口句柄 
@@ -9,7 +8,7 @@ BYTE *pBuf=new BYTE[windowwidth*windowheight*3];
 PAINTSTRUCT ps;
 HDC hdc,renderDC;//双缓冲DC 
 HBITMAP renderBmp;
-BITMAPINFO bmpinfo;
+BITMAPINFO bmpinfo;//位图信息
 
 //deltatime系统 
 struct timeval render_previoustime,render_presenttime,logic_previoustime,logic_presenttime;
@@ -31,20 +30,7 @@ void init(){//初始化
 	rectt.left=0;
 	rectt.right=windowwidth;
 	
-	//窗口DC声明 
-	InvalidateRect(main_hwnd,&rectt,true);//将整个窗口添加到更新区域 
-    hdc = BeginPaint(main_hwnd, &ps);//开始绘制，并调用更新区句柄
-    //双缓冲DC声明
-	renderDC=CreateCompatibleDC(hdc);
-    renderBmp = CreateCompatibleBitmap(hdc, windowwidth, windowheight);
-    SelectObject(renderDC, renderBmp);	
-    
-		
-	//获取位图到内存DIB
-	GetDIBits(renderDC,renderBmp,0,bmpinfo.bmiHeader.biHeight,pBuf,(BITMAPINFO*)&bmpinfo,0);
-    
 	//创建并填写位图信息 
-	
 	ZeroMemory(&bmpinfo,sizeof(BITMAPINFO));
 	bmpinfo.bmiHeader.biBitCount=24;      //每个像素多少位，也可直接写24(RGB)或者32(RGBA)
 	bmpinfo.bmiHeader.biCompression=0;
@@ -54,6 +40,7 @@ void init(){//初始化
 	bmpinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
 	bmpinfo.bmiHeader.biWidth=windowwidth;
 		
+	
 	//初始化deltatime系统和fps系统防止逻辑爆炸 
 	render_previoustime.tv_sec=0;
 	render_previoustime.tv_usec=0;
@@ -118,19 +105,15 @@ void render(){//渲染
 	int corecount=1;
 	
 	for(int i = 0; i < 10000; i++){	//fps:我感觉要出逝 
-		settri_quick(pBuf, Vector2(100.0, 100.0), Vector2(100.0, 200.0), Vector2(200.0, 100.0), 255, 255, 255);
+		settri_quick(pBuf, Vector{100.0, 100.0, 0.0, 0.0}, Vector{100.0, 200.0, 0.0, 0.0}, Vector{200.0, 100.0, 0.0, 0.0}, 255, 255, 255);
 	}
 	//EndPaint
 	
 	//全图处理完毕读出到renderDC
 	SetDIBits(renderDC,renderBmp,0,bmpinfo.bmiHeader.biHeight,pBuf,(BITMAPINFO*)&bmpinfo,0);
-	
-	BitBlt(hdc, 0, 0, windowwidth, windowheight, renderDC, 0, 0, SRCCOPY);//缓冲区显示 
-	
+	BitBlt(hdc, 0, 0, windowwidth, windowheight, renderDC, 0, 0, SRCCOPY);//缓冲区显示
     EndPaint(main_hwnd, &ps);//结束绘制，释放更新区句柄
     
-    
-	
 	return;
 }
 
