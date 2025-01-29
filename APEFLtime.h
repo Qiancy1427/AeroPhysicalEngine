@@ -4,7 +4,7 @@
 #include"APEFLhead.h"
 #include"APEFLmath.h"
 
-#define targetfps 60
+#define targetfps 100
 
 //deltatimeϵͳ 
 struct timeval render_previoustime,render_presenttime,logic_previoustime,logic_presenttime;

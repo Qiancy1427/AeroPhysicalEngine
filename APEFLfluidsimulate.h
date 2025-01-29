@@ -7,15 +7,16 @@
 
 
 //Á÷ÌåÄ£Äâ
-#define simulatemapwidth 380
-#define simulatemapheight 200
-#define simulateblocksize 5.f
-#define flowstrength 1.f 
+#define simulatemapwidth 900
+#define simulatemapheight 500
+#define simulateblocksize 2.f
+#define flowstrength 0.1f 
+#define displaystandard 0.05f
 bool solidchunk[simulatemapwidth][simulatemapheight]={false};
 float flowmap_hori[simulatemapwidth][simulatemapheight]={0.f},flowmap_verti[simulatemapwidth][simulatemapheight]={0.f};
 bool can_flow_hori[simulatemapwidth+1][simulatemapheight+2]={false},can_flow_verti[simulatemapwidth+2][simulatemapheight+1]={false};
 int flownumber[simulatemapwidth][simulatemapheight]={0};
-float densmap[simulatemapwidth][simulatemapheight]={0.f};
+float densmap[simulatemapwidth][simulatemapheight]={0.f},densmaplast[simulatemapwidth][simulatemapheight]={0.f};
 BYTE colorstrength[simulatemapwidth][simulatemapheight]={0};
 
 void fluidinit(){
@@ -23,15 +24,16 @@ void fluidinit(){
 	densmap[0][5] = 100.f;
 	densmap[100][150] = 10.f;
 	
-	solidchunk[20][20] = true;
-	solidchunk[21][20] = true;
-	solidchunk[20][21] = true;
-	solidchunk[21][21] = true;
-	solidchunk[22][20] = true;
 	
 	for(int i=0;i<350;i++){
 		solidchunk[i][10] = true;
 	}
+	for(int i=0;i<simulatemapwidth;i++){
+		for(int j=0;j<simulatemapheight;j++){
+			colorstrength[i][j] = (BYTE)((float)(1.f/(float)(1.f+pow(2.717f,-densmap[i][j])))*255.f);
+		}
+	}
+	
 	
 	return;
 }
@@ -94,6 +96,7 @@ void fluidupdate(){
 				densmap[i+1][j]+=flowmap_hori[i][j];
 				densmap[i][j]-=flowmap_hori[i][j];
 			}
+			//flowmap_hori[i][j]=0.f; 
 		}
 	}
 	for(int i=0;i<simulatemapwidth;i++){
@@ -102,11 +105,16 @@ void fluidupdate(){
 				densmap[i][j+1]+=flowmap_verti[i][j];
 				densmap[i][j]-=flowmap_verti[i][j];
 			}
+			//flowmap_verti[i][j]=0.f; 
 		}
 	}
 	for(int i=0;i<simulatemapwidth;i++){
 		for(int j=0;j<simulatemapheight;j++){
-			colorstrength[i][j] = (BYTE)((float)(1.f/(float)(1.f+pow(2.717f,-densmap[i][j])))*255.f);
+			if(densmaplast[i][j]-densmap[i][j]<-displaystandard||densmaplast[i][j]-densmap[i][j]>displaystandard){
+				colorstrength[i][j] = (BYTE)((float)(1.f/(float)(1.f+pow(2.717f,-densmap[i][j])))*255.f);
+				densmaplast[i][j]=densmap[i][j];
+			}
+			
 		}
 	}
 	

@@ -158,9 +158,9 @@ void render(){//‰÷»æ
 	for(int i = 0; i < simulatemapwidth; i++){
 		for(int j = 0; j < simulatemapheight; j++){
 			if(solidchunk[i][j]){
-				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize+1.f, j*simulateblocksize+simulateblocksize+1.f}, 255, 0, 0);
+				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, 255, 0, 0);
 			}else{
-				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize+1.f, j*simulateblocksize+simulateblocksize+1.f}, colorstrength[i][j], colorstrength[i][j], colorstrength[i][j]);
+				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, colorstrength[i][j], colorstrength[i][j], colorstrength[i][j]);
 			}
 			
 		}
