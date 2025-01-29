@@ -24,7 +24,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)/
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)//¿þÀÜwinapi 
 {
 	
-    // Register the window class.
+    // Register the window class
     const wchar_t CLASS_NAME[]  = L"APEwindow";
     
     WNDCLASS wc = { };
@@ -38,7 +38,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     // Create the window.
 
     HWND hwnd = CreateWindowEx(
-        0,                              // Optional window styles.
+        0,                              // Optional window styles
         CLASS_NAME,                     // Window class
         L"APEmain",    					// Window text
         WS_OVERLAPPEDWINDOW,            // Window style

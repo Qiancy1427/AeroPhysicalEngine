@@ -8,6 +8,7 @@
 #include"APEFLrend.h"
 #include"APEFLfluidsimulate.h"
 #include"APEFLobject.h" 
+#include"APEFLfont.h"
 
 void init(){//初始化 
 	//流体模拟
@@ -40,7 +41,7 @@ void init(){//初始化
 	render_deltatime = (render_presenttime.tv_sec*1000)+(render_presenttime.tv_usec/1000)-(render_previoustime.tv_sec*1000)-(render_previoustime.tv_usec/1000);
 	render_previoustime = render_presenttime;
 	for(int i=0;i<20;i++){
-		render_last20dt.push(1000/targetfps);
+		render_last20dt.push(targettime);
 	}
 	render_fps=0;
 	logic_previoustime.tv_sec=0;
@@ -51,20 +52,20 @@ void init(){//初始化
 	logic_deltatime = (logic_presenttime.tv_sec*1000)+(logic_presenttime.tv_usec/1000)-(logic_previoustime.tv_sec*1000)-(logic_previoustime.tv_usec/1000);
 	logic_previoustime = logic_presenttime;
 	for(int i=0;i<20;i++){
-		logic_last20dt.push(1000/targetfps);
+		logic_last20dt.push(targettime);
 	}
 	logic_fps=0;
 	
 	//以下为测试upd_obj所用
-	A.nbts.push(NBT(1,Vector{0.0f,0.0f,0.0f,1.0f}));
-	A.nbts.push(NBT(2,Vector{1.0f,0.0f,0.0f,1.0f}));
-	A.nbts.push(NBT(3,Vector{0.0f,1.0f,0.0f,1.0f})); 
-	B.nbts.push(NBT(1,Vector{0.0f,30.0f,0.0f,1.0f}));
-	B.nbts.push(NBT(2,Vector{1.0f,0.0f,0.0f,1.0f}));
-	B.nbts.push(NBT(3,Vector{0.0f,1.0f,0.0f,1.0f}));
-	C.nbts.push(NBT(1,Vector{30.0f,30.0f,0.0f,1.0f}));
-	C.nbts.push(NBT(2,Vector{1.0f,0.0f,0.0f,1.0f}));
-	C.nbts.push(NBT(3,Vector{0.0f,1.0f,0.0f,1.0f})); 
+	A.nbts.push(NBT(1,Vector(0.0f,0.0f,0.0f,1.0f)));
+	A.nbts.push(NBT(2,Vector(0.0f,0.0f,0.0f,1.0f)));
+	A.nbts.push(NBT(3,Vector(0.0f,1.0f,0.0f,1.0f))); 
+	B.nbts.push(NBT(1,Vector(0.0f,30.0f,0.0f,1.0f)));
+	B.nbts.push(NBT(2,Vector(1.0f,0.0f,0.0f,1.0f)));
+	B.nbts.push(NBT(3,Vector(0.0f,1.0f,0.0f,1.0f)));
+	C.nbts.push(NBT(1,Vector(30.0f,30.0f,0.0f,1.0f)));
+	C.nbts.push(NBT(2,Vector(1.0f,0.0f,0.0f,1.0f)));
+	C.nbts.push(NBT(3,Vector(0.0f,1.0f,0.0f,1.0f))); 
 	obj.push(A);
 	obj.push(B);
 	obj.push(C);

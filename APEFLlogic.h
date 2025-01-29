@@ -31,10 +31,10 @@ DWORD WINAPI logicLoop(LPVOID lpParamter){//Âß¼­Ö÷Ñ­»·
 	    	logic_last20dt.push(tt);
 		}
 		ctt+=logic_deltatime;
-	    if(ctt<20000/targetfps){
-			Sleep(20000/targetfps-ctt);
-	    	ctt=20000/targetfps;
-			logic_deltatime=20000/targetfps-ctt+logic_deltatime;
+	    if(ctt<targettime*20){
+			Sleep(targettime*20-ctt);
+	    	ctt=targettime*20;
+			logic_deltatime=targettime*20-ctt+logic_deltatime;
 		}
 		logic_last20dt.push(logic_deltatime);
 	    logic_fps=floor(20000/ctt);

@@ -7,6 +7,7 @@
 #include"APEFLlogic.h"
 #include"APEFLfluidsimulate.h"
 #include"APEFLobject.h"
+#include"APEFLfont.h"
 
 //windows api setting
 #define windowwidth 1920
@@ -142,6 +143,38 @@ void setrec_quick(BYTE pBuf[], Vector V, BYTE r, BYTE g, BYTE b){
 	return;
 }
 
+void settext(BYTE pBuf[],Vector V,char c,float size){
+	if(size<=0||size>100) return;
+	int cint=(int)c;
+	int startx=floor(V.cont[0]),starty=floor(V.cont[1]);
+	int endx=min((int)floor(V.cont[0]+8*size-1),windowwidth),endy=min((int)floor(V.cont[1]+8*size-1),windowheight);
+	int k=0,l=0; 
+	for(int i=startx;i<=endx;i++){
+		l=0;
+		for(int j=starty;j<=endy;j++){
+			if(fontlist[cint][(int)floor((float)l/size)][(int)floor((float)k/size)]){
+				setbmppixel(pBuf, i, j, 255, 255, 255);
+			}else{
+				setbmppixel(pBuf, i, j, 0, 0, 0);
+			}
+			l++;
+		}
+		k++;
+	}
+	
+	return;
+}
+
+void settextline(BYTE pBuf[],Vector V,string s,float size){
+	if(size<=0||size>100) return;
+	float xt=V.cont[0],yt=V.cont[1];
+	for(int i=0;i<s.size();i++){
+		settext(pBuf,Vector(xt,yt,0.f,0.f),s[i],size);
+		xt+=8*size;
+	}
+	return;
+}
+
 void render(){//渲染 
 	//窗口DC声明 
 	InvalidateRect(main_hwnd,&rectt,true);//将整个窗口添加到更新区域 
@@ -158,6 +191,8 @@ void render(){//渲染
 //		settri_quick(pBuf, Vector{100.0, 100.0, 0.0, 0.0}, Vector{100.0, 200.0, 0.0, 0.0}, Vector{200.0, 100.0, 0.0, 0.0}, 255, 255, 255);
 //	}
 	settri_quick(pBuf,A.nbts.front().data,B.nbts.front().data,C.nbts.front().data,255,255,255);
+	settextline(pBuf,Vector(100.f,100.f,0.f,0.f),"###hello###",3.141592);
+	settextline(pBuf,Vector(100.f,200.f,0.f,0.f),"###hello###",3);
 //	for(int i = 0; i < simulatemapwidth; i++){
 //		for(int j = 0; j < simulatemapheight; j++){
 //			if(solidchunk[i][j]){
