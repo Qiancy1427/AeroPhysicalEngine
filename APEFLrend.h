@@ -1,6 +1,7 @@
 #ifndef APEFLrend
 #define APEFLrend
 
+#include"APEFL.h" 
 #include"APEFLhead.h"
 #include"APEFLmath.h"
 #include"APEFLtime.h"
@@ -152,19 +153,20 @@ void render(){//渲染
 	// All painting occurs here, between BeginPaint and EndPaint.
 	//beginpaint
 	
-	/*for(int i = 0; i < 10000; i++){	//fps:我感觉要出逝 
-		settri_quick(pBuf, Vector{100.0, 100.0, 0.0, 0.0}, Vector{100.0, 200.0, 0.0, 0.0}, Vector{200.0, 100.0, 0.0, 0.0}, 255, 255, 255);
-	}*/
-	for(int i = 0; i < simulatemapwidth; i++){
-		for(int j = 0; j < simulatemapheight; j++){
-			if(solidchunk[i][j]){
-				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, 255, 0, 0);
-			}else{
-				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, colorstrength[i][j], colorstrength[i][j], colorstrength[i][j]);
-			}
-			
-		}
-	}
+//	for(int i = 0; i < 10000; i++){	//fps:我感觉要出逝 
+//		settri_quick(pBuf, Vector{100.0, 100.0, 0.0, 0.0}, Vector{100.0, 200.0, 0.0, 0.0}, Vector{200.0, 100.0, 0.0, 0.0}, 255, 255, 255);
+//	}
+	settri_quick(pBuf,A.nbts.front(),B.nbts.front(),C.nbts.front(),255,255,255);
+//	for(int i = 0; i < simulatemapwidth; i++){
+//		for(int j = 0; j < simulatemapheight; j++){
+//			if(solidchunk[i][j]){
+//				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, 255, 0, 0);
+//			}else{
+//				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, colorstrength[i][j], colorstrength[i][j], colorstrength[i][j]);
+//			}
+//			
+//		}
+//	}
 	
 	//EndPaint
 	

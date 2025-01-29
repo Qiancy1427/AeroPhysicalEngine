@@ -1,14 +1,36 @@
 #ifndef APEFLlogic
 #define APEFLlogic
 
+#include"APEFL.h"
 #include"APEFLhead.h"
 #include"APEFLmath.h"
 #include"APEFLtime.h"
 #include"APEFLfluidsimulate.h"
 
 
+void upd_obj(){
+	for(int i=0;i<obj.size();i++){
+		Object newobj=obj.front();
+		obj.pop();
+		int nbtsiz=newobj.nbts.size(); 
+		Vector tg[nbtsiz];
+		for(int j=0;j<nbtsiz;j++){
+			NBT newnbt=newobj.nbts.front();
+			newobj.nbts.pop();
+			tg[newnbt.name-1]=newnbt.data;
+		}
+		tg[0]=tg[1]*logic_deltatime;//速度算坐标 
+		tg[1]=tg[2]*logic_deltatime;//加速度算速度 
+		for(int i=0;i<nbtsiz;i++){
+			newobj.nbts.push(i,tg[i]);
+		}
+		obj.push(newobj);
+	}
+}
+
 void logic(){//游戏逻辑 
-	fluidupdate();
+//	fluidupdate();
+	upd_obj();
 	
 	return;
 }

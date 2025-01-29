@@ -10,9 +10,9 @@
 
 
 struct NBT {//define NBT
-    std::string name;
+    int name;
     Vector data;
-    NBT(std::string st, Vector qt){//NBT constructor
+    NBT(int st, Vector qt){//NBT constructor
 
         name = st;
         data = qt;
@@ -22,6 +22,8 @@ struct Object {//define Object
     std::queue <NBT> nbts;
 };
 
+queue <Object> obj; 
+
 /*
 NBTs' categories format
  Position 1
@@ -30,12 +32,12 @@ NBTs' categories format
  Force 4
 */
 
-
+Object A,B,C;
 
 void init(){//初始化 
 	//流体模拟
-	fluidinit();
-	fluidprecheck();
+//	fluidinit();
+//	fluidprecheck();
 
 	//设置整个窗口的矩形 
 	rectt.top=0;
@@ -78,6 +80,19 @@ void init(){//初始化
 	}
 	logic_fps=0;
 	
+	//以下为测试upd_obj所用
+	A.nbts.push(0,0,0);
+	A.nbts.push(50,0,0);
+	A.nbts.push(0,10,0); 
+	B.nbts.push(0,30,0);
+	B.nbts.push(50,0,0);
+	B.nbts.push(0,10,0);
+	C.nbts.push(30,30,0);
+	C.nbts.push(50,0,0);
+	C.nbts.push(0,10,0); 
+	obj.push(A);
+	obj.push(B);
+	obj.push(C);
 	return;
 }
 
