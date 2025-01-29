@@ -1,11 +1,12 @@
 #ifndef APEFLrend
 #define APEFLrend
 
-#include"APEFL.h" 
 #include"APEFLhead.h"
 #include"APEFLmath.h"
 #include"APEFLtime.h"
 #include"APEFLlogic.h"
+#include"APEFLfluidsimulate.h"
+#include"APEFLobject.h"
 
 //windows api setting
 #define windowwidth 1920
@@ -156,7 +157,7 @@ void render(){//渲染
 //	for(int i = 0; i < 10000; i++){	//fps:我感觉要出逝 
 //		settri_quick(pBuf, Vector{100.0, 100.0, 0.0, 0.0}, Vector{100.0, 200.0, 0.0, 0.0}, Vector{200.0, 100.0, 0.0, 0.0}, 255, 255, 255);
 //	}
-	settri_quick(pBuf,A.nbts.front(),B.nbts.front(),C.nbts.front(),255,255,255);
+	settri_quick(pBuf,A.nbts.front().data,B.nbts.front().data,C.nbts.front().data,255,255,255);
 //	for(int i = 0; i < simulatemapwidth; i++){
 //		for(int j = 0; j < simulatemapheight; j++){
 //			if(solidchunk[i][j]){

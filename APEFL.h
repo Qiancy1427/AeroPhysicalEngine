@@ -7,32 +7,7 @@
 #include"APEFLlogic.h"
 #include"APEFLrend.h"
 #include"APEFLfluidsimulate.h"
-
-
-struct NBT {//define NBT
-    int name;
-    Vector data;
-    NBT(int st, Vector qt){//NBT constructor
-
-        name = st;
-        data = qt;
-    }
-};
-struct Object {//define Object
-    std::queue <NBT> nbts;
-};
-
-queue <Object> obj; 
-
-/*
-NBTs' categories format
- Position 1
- Velocity 2
- Acceleration 3
- Force 4
-*/
-
-Object A,B,C;
+#include"APEFLobject.h" 
 
 void init(){//初始化 
 	//流体模拟
@@ -81,15 +56,15 @@ void init(){//初始化
 	logic_fps=0;
 	
 	//以下为测试upd_obj所用
-	A.nbts.push(0,0,0);
-	A.nbts.push(50,0,0);
-	A.nbts.push(0,10,0); 
-	B.nbts.push(0,30,0);
-	B.nbts.push(50,0,0);
-	B.nbts.push(0,10,0);
-	C.nbts.push(30,30,0);
-	C.nbts.push(50,0,0);
-	C.nbts.push(0,10,0); 
+	A.nbts.push(NBT(1,Vector{0.0f,0.0f,0.0f,1.0f}));
+	A.nbts.push(NBT(2,Vector{1.0f,0.0f,0.0f,1.0f}));
+	A.nbts.push(NBT(3,Vector{0.0f,1.0f,0.0f,1.0f})); 
+	B.nbts.push(NBT(1,Vector{0.0f,30.0f,0.0f,1.0f}));
+	B.nbts.push(NBT(2,Vector{1.0f,0.0f,0.0f,1.0f}));
+	B.nbts.push(NBT(3,Vector{0.0f,1.0f,0.0f,1.0f}));
+	C.nbts.push(NBT(1,Vector{30.0f,30.0f,0.0f,1.0f}));
+	C.nbts.push(NBT(2,Vector{1.0f,0.0f,0.0f,1.0f}));
+	C.nbts.push(NBT(3,Vector{0.0f,1.0f,0.0f,1.0f})); 
 	obj.push(A);
 	obj.push(B);
 	obj.push(C);
