@@ -38,7 +38,7 @@ DWORD WINAPI logicLoop(LPVOID lpParamter){//Âß¼­Ö÷Ñ­»·
 		}
 		logic_last20dt.push(logic_deltatime);
 	    logic_fps=floor(20000/ctt);
-	    cout<<"logic deltatime:"<<logic_deltatime<<"ms\n"<<"logic fps(average):"<<logic_fps<<"\n\n";
+	    //cout<<"logic deltatime:"<<logic_deltatime<<"ms\n"<<"logic fps(average):"<<logic_fps<<"\n\n";
 		
 	}
     return 0L;

@@ -5,6 +5,7 @@
 #include<sys/time.h>
 #include<conio.h>
 #include<cstdlib>
+#include<string>
 
 #include<Windows.h>
 #include<Mmsystem.h>

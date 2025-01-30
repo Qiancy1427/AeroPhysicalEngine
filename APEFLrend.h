@@ -10,8 +10,8 @@
 #include"APEFLfont.h"
 
 //windows api setting
-#define windowwidth 1920
-#define windowheight 1080
+#define windowwidth 1900
+#define windowheight 1000
 HWND main_hwnd;//唯一指定的窗口句柄 
 RECT rectt;//整个窗口的矩形 
 BYTE *pBuf=new BYTE[windowwidth*windowheight*3];
@@ -143,7 +143,7 @@ void setrec_quick(BYTE pBuf[], Vector V, BYTE r, BYTE g, BYTE b){
 	return;
 }
 
-void settext(BYTE pBuf[],Vector V,char c,float size){
+void settext(BYTE pBuf[],Vector V,char c,float size, BYTE r, BYTE g, BYTE b){
 	if(size<=0||size>100) return;
 	int cint=(int)c;
 	int startx=floor(V.cont[0]),starty=floor(V.cont[1]);
@@ -152,11 +152,8 @@ void settext(BYTE pBuf[],Vector V,char c,float size){
 	for(int i=startx;i<=endx;i++){
 		l=0;
 		for(int j=starty;j<=endy;j++){
-			if(fontlist[cint][(int)floor((float)l/size)][(int)floor((float)k/size)]){
-				setbmppixel(pBuf, i, j, 255, 255, 255);
-			}else{
-				setbmppixel(pBuf, i, j, 0, 0, 0);
-			}
+			if(fontlist[cint][(int)floor((float)l/size)][(int)floor((float)k/size)]) setbmppixel(pBuf, i, j, r, g, b);
+			
 			l++;
 		}
 		k++;
@@ -165,11 +162,11 @@ void settext(BYTE pBuf[],Vector V,char c,float size){
 	return;
 }
 
-void settextline(BYTE pBuf[],Vector V,string s,float size){
+void settextline(BYTE pBuf[],Vector V,string s,float size, BYTE r, BYTE g, BYTE b){
 	if(size<=0||size>100) return;
 	float xt=V.cont[0],yt=V.cont[1];
 	for(int i=0;i<s.size();i++){
-		settext(pBuf,Vector(xt,yt,0.f,0.f),s[i],size);
+		settext(pBuf,Vector(xt,yt,0.f,0.f),s[i],size,r,g,b);
 		xt+=8*size;
 	}
 	return;
@@ -187,12 +184,43 @@ void render(){//渲染
 	// All painting occurs here, between BeginPaint and EndPaint.
 	//beginpaint
 	
+	for(int i=0;i<windowwidth*windowheight*3;i++){
+		pBuf[i]=0;
+	}
+	
+	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-40),0.f,0.f),"dtt(logic):"+to_string(logic_deltatime)+"ms",1,0,255,0);
+	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-30),0.f,0.f),"fps(logic):"+to_string(logic_fps),1,0,255,0);
+	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-20),0.f,0.f),"dtt(render):"+to_string(render_deltatime)+"ms",1,0,255,0);
+	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-10),0.f,0.f),"fps(render):"+to_string(render_fps),1,0,255,0);
+	
 //	for(int i = 0; i < 10000; i++){	//fps:我感觉要出逝 
 //		settri_quick(pBuf, Vector{100.0, 100.0, 0.0, 0.0}, Vector{100.0, 200.0, 0.0, 0.0}, Vector{200.0, 100.0, 0.0, 0.0}, 255, 255, 255);
 //	}
-	settri_quick(pBuf,A.nbts.front().data,B.nbts.front().data,C.nbts.front().data,255,255,255);
-	settextline(pBuf,Vector(100.f,100.f,0.f,0.f),"###hello###",3.141592);
-	settextline(pBuf,Vector(100.f,200.f,0.f,0.f),"###hello###",3);
+	Vector triV[obj.size()];
+	for(int i=0;i<obj.size();i++){
+		Object newobj=obj.front();
+		obj.pop();
+		
+		int nbtsiz=newobj.nbts.size(); 
+		Vector tg[100];
+		bool tg_have[100]={false};
+		
+		while(!newobj.nbts.empty()){
+			NBT newnbt=newobj.nbts.front();
+			newobj.nbts.pop();
+			tg[newnbt.name]=newnbt.data;
+			tg_have[newnbt.name]=true;
+		}
+		triV[i]=tg[1];
+		
+		for(int j=1;j<=100;j++){
+			if(tg_have[j]) newobj.nbts.push(NBT(j,tg[j]));
+		}
+		obj.push(newobj);
+	}
+	settri_quick(pBuf,triV[0],triV[1],triV[2],255,255,255);
+	
+	
 //	for(int i = 0; i < simulatemapwidth; i++){
 //		for(int j = 0; j < simulatemapheight; j++){
 //			if(solidchunk[i][j]){
@@ -234,7 +262,7 @@ DWORD WINAPI renderLoop(LPVOID lpParamter){//渲染主循环
 		ctt+=render_deltatime;
 		render_last20dt.push(render_deltatime);
 	    render_fps=floor(20000/ctt);
-	    cout<<"render deltatime:"<<render_deltatime<<"ms\n"<<"render fps(average):"<<render_fps<<"\n\n";
+	    //cout<<"render deltatime:"<<render_deltatime<<"ms\n"<<"render fps(average):"<<render_fps<<"\n\n";
 		
 	}
     return 0L;

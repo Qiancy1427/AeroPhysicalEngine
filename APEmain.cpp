@@ -44,7 +44,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         WS_OVERLAPPEDWINDOW,            // Window style
 
         // Size and position
-        0, 0, windowwidth, windowheight,
+        0, 0, windowwidth, windowheight+39,
 
         NULL,       // Parent window    
         NULL,       // Menu

@@ -5,7 +5,7 @@
 #include"APEFLmath.h"
 
 #define targetfps 100
-const float targettime=1;
+const float targettime=1000/targetfps;
 
 
 //deltatimeϵͳ 

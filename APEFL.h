@@ -57,15 +57,15 @@ void init(){//初始化
 	logic_fps=0;
 	
 	//以下为测试upd_obj所用
-	A.nbts.push(NBT(1,Vector(0.0f,0.0f,0.0f,1.0f)));
-	A.nbts.push(NBT(2,Vector(0.0f,0.0f,0.0f,1.0f)));
-	A.nbts.push(NBT(3,Vector(0.0f,1.0f,0.0f,1.0f))); 
-	B.nbts.push(NBT(1,Vector(0.0f,30.0f,0.0f,1.0f)));
-	B.nbts.push(NBT(2,Vector(1.0f,0.0f,0.0f,1.0f)));
-	B.nbts.push(NBT(3,Vector(0.0f,1.0f,0.0f,1.0f)));
+	A.nbts.push(NBT(1,Vector(10.0f,10.0f,0.0f,1.0f)));
+	A.nbts.push(NBT(2,Vector(0.05f,0.0f,0.0f,1.0f)));
+	A.nbts.push(NBT(3,Vector(0.0f,0.0001f,0.0f,1.0f))); 
+	B.nbts.push(NBT(1,Vector(10.0f,30.0f,0.0f,1.0f)));
+	B.nbts.push(NBT(2,Vector(0.05f,0.0f,0.0f,1.0f)));
+	B.nbts.push(NBT(3,Vector(0.0f,0.0001f,0.0f,1.0f)));
 	C.nbts.push(NBT(1,Vector(30.0f,30.0f,0.0f,1.0f)));
-	C.nbts.push(NBT(2,Vector(1.0f,0.0f,0.0f,1.0f)));
-	C.nbts.push(NBT(3,Vector(0.0f,1.0f,0.0f,1.0f))); 
+	C.nbts.push(NBT(2,Vector(0.05f,0.0f,0.0f,1.0f)));
+	C.nbts.push(NBT(3,Vector(0.0f,0.0001f,0.0f,1.0f))); 
 	obj.push(A);
 	obj.push(B);
 	obj.push(C);
