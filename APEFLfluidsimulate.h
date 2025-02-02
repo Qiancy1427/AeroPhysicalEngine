@@ -10,19 +10,26 @@
 #define simulatemapwidth 900
 #define simulatemapheight 500
 #define simulateblocksize 2.f
-#define flowstrength 0.5f 
+
+#define stickness .1f 
+#define conpressness .5f 
 #define displaystandard 0.05f
+int displaymode = 1;
 bool solidchunk[simulatemapwidth][simulatemapheight]={false};
 float flowmap_hori[simulatemapwidth][simulatemapheight]={0.f},flowmap_verti[simulatemapwidth][simulatemapheight]={0.f};
 bool can_flow_hori[simulatemapwidth+1][simulatemapheight+2]={false},can_flow_verti[simulatemapwidth+2][simulatemapheight+1]={false};
 int flownumber[simulatemapwidth][simulatemapheight]={0};
 float densmap[simulatemapwidth][simulatemapheight]={0.f},densmaplast[simulatemapwidth][simulatemapheight]={0.f};
+Vector velomap[simulatemapwidth][simulatemapheight];
+Vector presmap[simulatemapwidth][simulatemapheight];
 BYTE colorstrength[simulatemapwidth][simulatemapheight]={0};
 
 void fluidinit(){
 	
 	densmap[0][5] = 100.f;
 	densmap[100][150] = 10.f;
+	densmap[200][100] = 10.f;
+	densmap[500][300] = 10.f;
 	
 	
 	for(int i=0;i<350;i++){
@@ -31,6 +38,15 @@ void fluidinit(){
 	for(int i=0;i<simulatemapwidth;i++){
 		for(int j=0;j<simulatemapheight;j++){
 			colorstrength[i][j] = (BYTE)((float)(1.f/(float)(1.f+pow(2.717f,-densmap[i][j])))*255.f);
+		}
+	}
+	
+	for(int i=0;i<simulatemapwidth;i++){
+		for(int j=0;j<simulatemapheight;j++){
+			presmap[i][j].cont[0]=0.f;
+			presmap[i][j].cont[1]=0.f;
+			presmap[i][j].cont[2]=0.f;
+			presmap[i][j].cont[3]=0.f;
 		}
 	}
 	
@@ -82,7 +98,7 @@ void fluidupdate(){
 			if(!solidchunk[i][j]&&flownumber[i][j]!=0){
 				xt=i+1;
 				yt=j+1;
-				flt=densmap[i][j]*flowstrength/(float)flownumber[i][j];
+				flt=densmap[i][j]*conpressness/(float)flownumber[i][j];
 				if(can_flow_hori[xt][yt]) flowmap_hori[i][j]+=flt;
 				if(can_flow_hori[i][yt]) flowmap_hori[i-1][j]-=flt;
 				if(can_flow_verti[xt][yt]) flowmap_verti[i][j]+=flt;
@@ -108,13 +124,35 @@ void fluidupdate(){
 			flowmap_verti[i][j]=0.f; 
 		}
 	}
+	
+	for(int i=1;i<simulatemapwidth-1;i++){
+		for(int j=1;j<simulatemapheight-1;j++){
+			presmap[i][j].cont[0]=0;
+			presmap[i][j].cont[1]=0;
+			if(!solidchunk[i-1][j]) presmap[i][j].cont[0]+=densmap[i-1][j];
+			if(!solidchunk[i+1][j]) presmap[i][j].cont[0]+=densmap[i+1][j];
+			if(!solidchunk[i][j-1]) presmap[i][j].cont[1]+=densmap[i][j-1];
+			if(!solidchunk[i][j+1]) presmap[i][j].cont[1]+=densmap[i][j+1];
+			presmap[i][j].cont[3]=abs(presmap[i][j].cont[0])+abs(presmap[i][j].cont[1]);
+		}
+	}
+	
+	if(GetAsyncKeyState(0x31)){
+		displaymode=1;
+	}
+	if(GetAsyncKeyState(0x32)){
+		displaymode=2;
+	}
+	if(displaymode==1)
 	for(int i=0;i<simulatemapwidth;i++){
 		for(int j=0;j<simulatemapheight;j++){
-			if(densmaplast[i][j]-densmap[i][j]<-displaystandard||densmaplast[i][j]-densmap[i][j]>displaystandard){
-				colorstrength[i][j] = (BYTE)((float)(1.f/(float)(1.f+pow(2.717f,-densmap[i][j])))*255.f);
-				densmaplast[i][j]=densmap[i][j];
-			}
-			
+			colorstrength[i][j] = (BYTE)((float)(1.f/(float)(1.f+pow(2.717f,-densmap[i][j])))*255.f);
+		}
+	}
+	if(displaymode==2)
+	for(int i=0;i<simulatemapwidth;i++){
+		for(int j=0;j<simulatemapheight;j++){
+			colorstrength[i][j] = (BYTE)((float)(1.f/(float)(1.f+pow(2.717f,-presmap[i][j].cont[3])))*255.f);
 		}
 	}
 	
