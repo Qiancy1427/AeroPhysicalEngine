@@ -10,7 +10,7 @@
 #define simulatemapwidth 900
 #define simulatemapheight 500
 #define simulateblocksize 2.f
-#define flowstrength 0.1f 
+#define flowstrength 0.5f 
 #define displaystandard 0.05f
 bool solidchunk[simulatemapwidth][simulatemapheight]={false};
 float flowmap_hori[simulatemapwidth][simulatemapheight]={0.f},flowmap_verti[simulatemapwidth][simulatemapheight]={0.f};
@@ -96,7 +96,7 @@ void fluidupdate(){
 				densmap[i+1][j]+=flowmap_hori[i][j];
 				densmap[i][j]-=flowmap_hori[i][j];
 			}
-			//flowmap_hori[i][j]=0.f; 
+			flowmap_hori[i][j]=0.f; 
 		}
 	}
 	for(int i=0;i<simulatemapwidth;i++){
@@ -105,7 +105,7 @@ void fluidupdate(){
 				densmap[i][j+1]+=flowmap_verti[i][j];
 				densmap[i][j]-=flowmap_verti[i][j];
 			}
-			//flowmap_verti[i][j]=0.f; 
+			flowmap_verti[i][j]=0.f; 
 		}
 	}
 	for(int i=0;i<simulatemapwidth;i++){

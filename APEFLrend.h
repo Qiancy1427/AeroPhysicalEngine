@@ -188,49 +188,34 @@ void render(){//渲染
 		pBuf[i]=0;
 	}
 	
+//	for(int i = 0; i < 10000; i++){	//fps:我感觉要出逝 
+//		settri_quick(pBuf, Vector{100.0, 100.0, 0.0, 0.0}, Vector{100.0, 200.0, 0.0, 0.0}, Vector{200.0, 100.0, 0.0, 0.0}, 255, 255, 255);
+//	}
+
+/*
+	if(at!=-1&&bt!=-1&&ct!=-1){
+		if(objlist[at].nbtexist[1]&&objlist[bt].nbtexist[1]&&objlist[ct].nbtexist[1]){
+			settri_quick(pBuf,objlist[at].nbtlist[1],objlist[bt].nbtlist[1],objlist[ct].nbtlist[1],255,255,255);
+		}
+	}
+*/	
+	
+	
+	for(int i = 0; i < simulatemapwidth; i++){
+		for(int j = 0; j < simulatemapheight; j++){
+			if(solidchunk[i][j]){
+				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, 255, 0, 0);
+			}else{
+				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, colorstrength[i][j], colorstrength[i][j], colorstrength[i][j]);
+			}
+			
+		}
+	}
+	
 	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-40),0.f,0.f),"dtt(logic):"+to_string(logic_deltatime)+"ms",1,0,255,0);
 	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-30),0.f,0.f),"fps(logic):"+to_string(logic_fps),1,0,255,0);
 	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-20),0.f,0.f),"dtt(render):"+to_string(render_deltatime)+"ms",1,0,255,0);
 	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-10),0.f,0.f),"fps(render):"+to_string(render_fps),1,0,255,0);
-	
-//	for(int i = 0; i < 10000; i++){	//fps:我感觉要出逝 
-//		settri_quick(pBuf, Vector{100.0, 100.0, 0.0, 0.0}, Vector{100.0, 200.0, 0.0, 0.0}, Vector{200.0, 100.0, 0.0, 0.0}, 255, 255, 255);
-//	}
-	Vector triV[obj.size()];
-	for(int i=0;i<obj.size();i++){
-		Object newobj=obj.front();
-		obj.pop();
-		
-		int nbtsiz=newobj.nbts.size(); 
-		Vector tg[100];
-		bool tg_have[100]={false};
-		
-		while(!newobj.nbts.empty()){
-			NBT newnbt=newobj.nbts.front();
-			newobj.nbts.pop();
-			tg[newnbt.name]=newnbt.data;
-			tg_have[newnbt.name]=true;
-		}
-		triV[i]=tg[1];
-		
-		for(int j=1;j<=100;j++){
-			if(tg_have[j]) newobj.nbts.push(NBT(j,tg[j]));
-		}
-		obj.push(newobj);
-	}
-	settri_quick(pBuf,triV[0],triV[1],triV[2],255,255,255);
-	
-	
-//	for(int i = 0; i < simulatemapwidth; i++){
-//		for(int j = 0; j < simulatemapheight; j++){
-//			if(solidchunk[i][j]){
-//				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, 255, 0, 0);
-//			}else{
-//				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, colorstrength[i][j], colorstrength[i][j], colorstrength[i][j]);
-//			}
-//			
-//		}
-//	}
 	
 	//EndPaint
 	

@@ -6,6 +6,7 @@
 
 #define targetfps 100
 const float targettime=1000/targetfps;
+#define timepertick 1
 
 
 //deltatimeϵͳ 

@@ -19,4 +19,7 @@
 
 using namespace std;
 
+#define unknowcapacitymax 10000
+
+
 #endif

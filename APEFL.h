@@ -12,8 +12,8 @@
 
 void init(){//初始化 
 	//流体模拟
-//	fluidinit();
-//	fluidprecheck();
+	fluidinit();
+	fluidprecheck();
 
 	//设置整个窗口的矩形 
 	rectt.top=0;
@@ -57,18 +57,25 @@ void init(){//初始化
 	logic_fps=0;
 	
 	//以下为测试upd_obj所用
-	A.nbts.push(NBT(1,Vector(10.0f,10.0f,0.0f,1.0f)));
-	A.nbts.push(NBT(2,Vector(0.05f,0.0f,0.0f,1.0f)));
-	A.nbts.push(NBT(3,Vector(0.0f,0.0001f,0.0f,1.0f))); 
-	B.nbts.push(NBT(1,Vector(10.0f,30.0f,0.0f,1.0f)));
-	B.nbts.push(NBT(2,Vector(0.05f,0.0f,0.0f,1.0f)));
-	B.nbts.push(NBT(3,Vector(0.0f,0.0001f,0.0f,1.0f)));
-	C.nbts.push(NBT(1,Vector(30.0f,30.0f,0.0f,1.0f)));
-	C.nbts.push(NBT(2,Vector(0.05f,0.0f,0.0f,1.0f)));
-	C.nbts.push(NBT(3,Vector(0.0f,0.0001f,0.0f,1.0f))); 
-	obj.push(A);
-	obj.push(B);
-	obj.push(C);
+	at=create_obj();
+	if(at!=-1){
+		set_nbt(at,1,Vector(10.f,10.f,0.f,1.f));
+		set_nbt(at,2,Vector(3.f,0.f,0.f,1.f));
+		set_nbt(at,3,Vector(0.f,0.01f,0.f,1.f));
+	}
+	bt=create_obj();
+	if(bt!=-1){
+		set_nbt(bt,1,Vector(10.f,30.f,0.f,1.f));
+		set_nbt(bt,2,Vector(3.f,0.f,0.f,1.f));
+		set_nbt(bt,3,Vector(0.f,0.01f,0.f,1.f));
+	}
+	ct=create_obj();
+	if(ct!=-1){
+		set_nbt(ct,1,Vector(30.f,30.f,0.f,1.f));
+		set_nbt(ct,2,Vector(3.f,0.0f,0.f,1.f));
+		set_nbt(ct,3,Vector(0.f,0.01f,0.f,1.f));
+	}
+	
 	return;
 }
 

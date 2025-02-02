@@ -5,23 +5,18 @@
 #include"APEFLmath.h"
 #include"APEFLtime.h"
 
-struct NBT {//define NBT
-    int name;
-    Vector data;
-    NBT(){ }
-    NBT(int st, Vector qt){//NBT constructor
+#define nbtmaximum 20
+#define objmaximum 100
 
-        name = st;
-        data = qt;
-    }
-};
 struct Object {//define Object
-    std::queue <NBT> nbts;
+    Vector nbtlist[nbtmaximum];
+	bool nbtexist[nbtmaximum]={false};
 };
 
-queue <Object> obj;
+Object objlist[objmaximum];
+bool objexist[objmaximum]={false};
 
-Object A,B,C;
+int at,bt,ct;
 
 /*
 NBTs' categories format
@@ -31,30 +26,50 @@ NBTs' categories format
  Force 4
 */
 
+void set_nbt(int objnumber,int nbtname,Vector nbtdata){
+	if(nbtname>=nbtmaximum) return;
+	objlist[objnumber].nbtlist[nbtname] = nbtdata;
+	objlist[objnumber].nbtexist[nbtname]=true;
+	return;
+}
+
+void cancel_nbt(int objnumber,int nbtname){
+	if(nbtname>=nbtmaximum) return;
+	objlist[objnumber].nbtexist[nbtname]=false;
+	return;
+}
+	
+int create_obj(){
+	for(int i=0;i<objmaximum;i++){
+		if(!objexist[i]){
+			objexist[i]=true;
+			return i;
+		}
+	}
+	return -1;
+}
+
+void delete_obj(int objnumber){
+	for(int i=0;i<nbtmaximum;i++){
+		objlist[objnumber].nbtexist[i]=false;
+	}
+	objexist[objnumber]=false;
+	return;
+}
+
 void upd_obj(){
-	for(int i=0;i<obj.size();i++){
-		Object newobj=obj.front();
-		obj.pop();
-		
-		int nbtsiz=newobj.nbts.size(); 
-		Vector tg[100];
-		bool tg_have[100]={false};
-		
-		while(!newobj.nbts.empty()){
-			NBT newnbt=newobj.nbts.front();
-			newobj.nbts.pop();
-			tg[newnbt.name]=newnbt.data;
-			tg_have[newnbt.name]=true;
+	for(int i=0;i<objmaximum;i++){
+		if(objexist[i]){
+			//physics begin
+			if(objlist[i].nbtexist[1]&&objlist[i].nbtexist[2]){
+				set_nbt(i,1,vec_add(objlist[i].nbtlist[1],vec_scapro(objlist[i].nbtlist[2],timepertick)));
+				cout<<objlist[i].nbtlist[1].cont[0]<<" "<<objlist[i].nbtlist[1].cont[1]<<" "<<objlist[i].nbtlist[1].cont[2]<<" "<<objlist[i].nbtlist[1].cont[3]<<"\n";
+			}
+			if(objlist[i].nbtexist[2]&&objlist[i].nbtexist[3]) set_nbt(i,2,vec_add(objlist[i].nbtlist[2],vec_scapro(objlist[i].nbtlist[3],timepertick)));
+			//physics end
+			
+			cout<<"\n";
 		}
-		
-		tg[1]=vec_add(tg[1],vec_scapro(tg[2],targettime));//速度算坐标 
-		cout<<tg[1].cont[0]<<" "<<tg[1].cont[1]<<" "<<tg[1].cont[2]<<" "<<tg[1].cont[3]<<"\n";
-		tg[2]=vec_add(tg[2],vec_scapro(tg[3],targettime));//加速度算速度 
-		
-		for(int j=1;j<=100;j++){
-			if(tg_have[j]) newobj.nbts.push(NBT(j,tg[j]));
-		}
-		obj.push(newobj);
 	}
 	cout<<"\n";
 	return; 

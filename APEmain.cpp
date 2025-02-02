@@ -9,6 +9,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)/
     switch (uMsg)
     {
     case WM_DESTROY:
+    	
         PostQuitMessage(0);//窗口还是得能关上的，windows api官方的东西就只能干这种杂鱼事了 .
     case WM_PAINT:
         {
