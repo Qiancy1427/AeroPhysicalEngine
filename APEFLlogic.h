@@ -8,8 +8,8 @@
 #include"APEFLfluidsimulate.h"
 
 void logic(){//ÓÎÏ·Âß¼­ 
-	fluidupdate();
-	//upd_obj();
+//	fluidupdate();
+	upd_obj();
 	
 	return;
 }

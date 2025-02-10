@@ -7,6 +7,7 @@
 #include"APEFLlogic.h"
 #include"APEFLfluidsimulate.h"
 #include"APEFLobject.h"
+#include"APEFLmodel.h"
 #include"APEFLfont.h"
 
 //windows api setting
@@ -192,31 +193,27 @@ void render(){//渲染
 //		settri_quick(pBuf, Vector{100.0, 100.0, 0.0, 0.0}, Vector{100.0, 200.0, 0.0, 0.0}, Vector{200.0, 100.0, 0.0, 0.0}, 255, 255, 255);
 //	}
 
-/*
-	if(at!=-1&&bt!=-1&&ct!=-1){
-		if(objlist[at].nbtexist[1]&&objlist[bt].nbtexist[1]&&objlist[ct].nbtexist[1]){
-			settri_quick(pBuf,objlist[at].nbtlist[1],objlist[bt].nbtlist[1],objlist[ct].nbtlist[1],255,255,255);
-		}
-	}
-*/	
+
+	Vector rec=Vector(objlist[at].nbtlist[1].cont[0]+cubelist[am].p1.cont[0],objlist[at].nbtlist[1].cont[1]+cubelist[am].p1.cont[1],objlist[at].nbtlist[1].cont[0]+cubelist[am].p2.cont[0],objlist[at].nbtlist[1].cont[1]+cubelist[am].p2.cont[1]);
+	setrec_quick(pBuf,rec,255,255,255);
 	
 	
-	for(int i = 0; i < simulatemapwidth; i++){
-		for(int j = 0; j < simulatemapheight; j++){
-			if(solidchunk[i][j]){
-				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, 255, 0, 0);
-			}else{
-				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, colorstrength[i][j], colorstrength[i][j], colorstrength[i][j]);
-			}
-			
-		}
-	}
+//	for(int i = 0; i < simulatemapwidth; i++){
+//		for(int j = 0; j < simulatemapheight; j++){
+//			if(solidchunk[i][j]){
+//				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, 255, 0, 0);
+//			}else{
+//				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, colorstrength[i][j], colorstrength[i][j], colorstrength[i][j]);
+//			}
+//			
+//		}
+//	}
 	
-	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-40),0.f,0.f),"dtt(logic):"+to_string(logic_deltatime)+"ms",1,0,255,0);
+/*	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-40),0.f,0.f),"dtt(logic):"+to_string(logic_deltatime)+"ms",1,0,255,0);
 	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-30),0.f,0.f),"fps(logic):"+to_string(logic_fps),1,0,255,0);
 	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-20),0.f,0.f),"dtt(render):"+to_string(render_deltatime)+"ms",1,0,255,0);
 	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-10),0.f,0.f),"fps(render):"+to_string(render_fps),1,0,255,0);
-	
+*/	
 	//EndPaint
 	
 	//全图处理完毕读出到renderDC

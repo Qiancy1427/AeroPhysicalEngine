@@ -24,6 +24,7 @@ NBTs' categories format
  Velocity 2
  Acceleration 3
  Force 4
+ Number 5
 */
 
 void set_nbt(int objnumber,int nbtname,Vector nbtdata){

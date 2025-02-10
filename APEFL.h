@@ -59,22 +59,12 @@ void init(){//初始化
 	//以下为测试upd_obj所用
 	at=create_obj();
 	if(at!=-1){
-		set_nbt(at,1,Vector(10.f,10.f,0.f,1.f));
+		set_nbt(at,1,Vector(25.f,25.f,0.f,1.f));
 		set_nbt(at,2,Vector(3.f,0.f,0.f,1.f));
 		set_nbt(at,3,Vector(0.f,0.01f,0.f,1.f));
 	}
-	bt=create_obj();
-	if(bt!=-1){
-		set_nbt(bt,1,Vector(10.f,30.f,0.f,1.f));
-		set_nbt(bt,2,Vector(3.f,0.f,0.f,1.f));
-		set_nbt(bt,3,Vector(0.f,0.01f,0.f,1.f));
-	}
-	ct=create_obj();
-	if(ct!=-1){
-		set_nbt(ct,1,Vector(30.f,30.f,0.f,1.f));
-		set_nbt(ct,2,Vector(3.f,0.0f,0.f,1.f));
-		set_nbt(ct,3,Vector(0.f,0.01f,0.f,1.f));
-	}
+	am=create_cube();
+	if(am!=-1)	set_cube(am,Vector(-25.f,-25.f,0.f,1.f),Vector(25.f,25.f,0.f,1.f));
 	
 	return;
 }
