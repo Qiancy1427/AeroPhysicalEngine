@@ -30,4 +30,9 @@ void set_cube(int modelname, Vector p1, Vector p2){
 	cubelist[modelname].p2=p2;
 }
 
+void model_init(){
+	am=create_cube();
+	if(am!=-1)	set_cube(am,Vector(-25.f,-25.f,0.f,1.f),Vector(25.f,25.f,0.f,1.f));
+}
+
 #endif

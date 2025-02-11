@@ -57,15 +57,8 @@ void init(){//初始化
 	logic_fps=0;
 	
 	//以下为测试upd_obj所用
-	at=create_obj();
-	if(at!=-1){
-		set_nbt(at,1,Vector(25.f,25.f,0.f,1.f));
-		set_nbt(at,2,Vector(3.f,0.f,0.f,1.f));
-		set_nbt(at,3,Vector(0.f,0.01f,0.f,1.f));
-	}
-	am=create_cube();
-	if(am!=-1)	set_cube(am,Vector(-25.f,-25.f,0.f,1.f),Vector(25.f,25.f,0.f,1.f));
-	
+	obj_init();
+	model_init();
 	return;
 }
 

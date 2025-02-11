@@ -173,6 +173,23 @@ void settextline(BYTE pBuf[],Vector V,string s,float size, BYTE r, BYTE g, BYTE 
 	return;
 }
 
+void rendcube(BYTE pBuf[], int objnum, int ccbnum, BYTE r, BYTE g, BYTE b){
+	float x1, y1, x2, y2, x3, y3, x4, y4;
+	x1=objlist[objnum].nbtlist[1].cont[0]+cubelist[ccbnum].p1.cont[0]*cos((double)objlist[objnum].nbtlist[5].cont[0]+0.25*M_PI);
+	y1=objlist[objnum].nbtlist[1].cont[1]+cubelist[ccbnum].p1.cont[1]*sin((double)objlist[objnum].nbtlist[5].cont[0]+0.25*M_PI);
+	x2=objlist[objnum].nbtlist[1].cont[0]+cubelist[ccbnum].p2.cont[0]*cos((double)objlist[objnum].nbtlist[5].cont[0]+0.25*M_PI);
+	y2=objlist[objnum].nbtlist[1].cont[1]+cubelist[ccbnum].p2.cont[1]*sin((double)objlist[objnum].nbtlist[5].cont[0]+0.25*M_PI);
+	x3=objlist[objnum].nbtlist[1].cont[0]+cubelist[ccbnum].p1.cont[0]*sin((double)objlist[objnum].nbtlist[5].cont[0]+0.25*M_PI);
+	y3=objlist[objnum].nbtlist[1].cont[1]+cubelist[ccbnum].p2.cont[1]*cos((double)objlist[objnum].nbtlist[5].cont[0]+0.25*M_PI);
+	x4=objlist[objnum].nbtlist[1].cont[0]+cubelist[ccbnum].p2.cont[0]*sin((double)objlist[objnum].nbtlist[5].cont[0]+0.25*M_PI);
+	y4=objlist[objnum].nbtlist[1].cont[1]+cubelist[ccbnum].p1.cont[1]*cos((double)objlist[objnum].nbtlist[5].cont[0]+0.25*M_PI);
+	cout<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<"\n";
+	Vector ccb1=Vector(x1,y1,0.f,1.f),ccb2=Vector(x2,y2,0.f,1.f),ccb3=Vector(x3,y3,0.f,1.f),ccb4=Vector(x4,y4,0.f,1.f);
+	settri_quick(pBuf, ccb1, ccb2, ccb3, r, g, b);
+	settri_quick(pBuf, ccb1, ccb2, ccb4, r, g, b);
+	return;
+}
+
 void render(){//渲染 
 	//窗口DC声明 
 	InvalidateRect(main_hwnd,&rectt,true);//将整个窗口添加到更新区域 
@@ -193,22 +210,19 @@ void render(){//渲染
 //		settri_quick(pBuf, Vector{100.0, 100.0, 0.0, 0.0}, Vector{100.0, 200.0, 0.0, 0.0}, Vector{200.0, 100.0, 0.0, 0.0}, 255, 255, 255);
 //	}
 
-
-	Vector rec=Vector(objlist[at].nbtlist[1].cont[0]+cubelist[am].p1.cont[0],objlist[at].nbtlist[1].cont[1]+cubelist[am].p1.cont[1],objlist[at].nbtlist[1].cont[0]+cubelist[am].p2.cont[0],objlist[at].nbtlist[1].cont[1]+cubelist[am].p2.cont[1]);
-	setrec_quick(pBuf,rec,255,255,255);
+	rendcube(pBuf, at, am, 255, 255, 255);
 	
-	
-//	for(int i = 0; i < simulatemapwidth; i++){
-//		for(int j = 0; j < simulatemapheight; j++){
-//			if(solidchunk[i][j]){
-//				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, 255, 0, 0);
-//			}else{
-//				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, colorstrength[i][j], colorstrength[i][j], colorstrength[i][j]);
-//			}
-//			
-//		}
-//	}
-	
+/*	for(int i = 0; i < simulatemapwidth; i++){
+		for(int j = 0; j < simulatemapheight; j++){
+			if(solidchunk[i][j]){
+				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, 255, 0, 0);
+			}else{
+				setrec_quick(pBuf, Vector{i*simulateblocksize+1.f, j*simulateblocksize+1.f, i*simulateblocksize+simulateblocksize, j*simulateblocksize+simulateblocksize}, colorstrength[i][j], colorstrength[i][j], colorstrength[i][j]);
+			}
+			
+		}
+	}
+*/	
 /*	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-40),0.f,0.f),"dtt(logic):"+to_string(logic_deltatime)+"ms",1,0,255,0);
 	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-30),0.f,0.f),"fps(logic):"+to_string(logic_fps),1,0,255,0);
 	settextline(pBuf,Vector((float)(windowwidth-180),(float)(windowheight-20),0.f,0.f),"dtt(render):"+to_string(render_deltatime)+"ms",1,0,255,0);
